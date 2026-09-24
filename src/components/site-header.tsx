@@ -1,7 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { useLanguage } from "@/lib/language";
+import { useLanguage, type Language } from "@/lib/language";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,15 @@ import mascotImage from "@/assets/uploads/2950.png";
 
 const BOOKING_URL =
   "https://wa.me/351927703617?text=Hello%21%20I%27d%20like%20to%20book%20a%20table%20at%20Tomorrow%20at%209.";
+
+export function bookingUrl(language: Language) {
+  const message = language === "pt"
+    ? "Olá! Gostaria de reservar uma mesa no Tomorrow at 9."
+    : language === "es"
+      ? "¡Hola! Me gustaría reservar una mesa en Tomorrow at 9."
+      : "Hello! I’d like to book a table at Tomorrow at 9.";
+  return `https://wa.me/351927703617?text=${encodeURIComponent(message)}`;
+}
 
 const links = [
   { label: "Home", to: "/", hash: "top" },
@@ -18,7 +27,7 @@ const links = [
 ] as const;
 
 export function SiteHeader() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const location = useLocation();
   const onMenuPage = location.pathname === "/menu";
   const [orderCount, setOrderCount] = useState(0);
@@ -73,7 +82,7 @@ export function SiteHeader() {
           asChild
           className="hidden !border-primary !bg-primary !text-foreground hover:!border-foreground hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:inline-flex"
         >
-          <a href={BOOKING_URL} target="_blank" rel="noreferrer">{t("Book a table")} <ArrowUpRight size={15} /></a>
+          <a href={bookingUrl(language)} target="_blank" rel="noreferrer">{t("Book a table")} <ArrowUpRight size={15} /></a>
         </Button>
         <Button
           className="size-11 !border-primary !bg-primary p-0 !text-primary-foreground hover:!border-foreground hover:!bg-foreground hover:!text-primary-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
@@ -102,7 +111,7 @@ export function SiteHeader() {
           asChild
           className="w-full !border-foreground !bg-foreground !text-background hover:!border-background hover:!bg-background hover:!text-foreground focus-visible:ring-2 focus-visible:ring-background focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
         >
-          <a href={BOOKING_URL} target="_blank" rel="noreferrer">{t("Book a table")} <ArrowUpRight size={16} /></a>
+          <a href={bookingUrl(language)} target="_blank" rel="noreferrer">{t("Book a table")} <ArrowUpRight size={16} /></a>
         </Button>
       </div>
     </header>
