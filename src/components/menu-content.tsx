@@ -58,7 +58,7 @@ function extraDetails(extra: string) {
   };
 }
 
-function getCustomization(item?: Item): ItemCustomization {
+function getCustomization(item?: Item | null): ItemCustomization {
   const name = item?.name?.toLowerCase() ?? "";
 
   if (name === "halloumi breakfast" || name === "big breakfast") {
@@ -132,9 +132,9 @@ function getCustomization(item?: Item): ItemCustomization {
 }
 
 function getChoicePrice(item: Item, choices: Record<string, string>) {
-  if (item.name === "Sparkling wine") return choices.format === "Bottle" ? 3000 : 700;
-  if (item.name === "White wine") return choices.format === "Bottle" ? 3200 : 750;
-  if (item.name === "Orange wine") return choices.format === "Bottle" ? 2500 : 650;
+  if (item.name === "Sparkling wine") return choices["format"] === "Bottle" ? 3000 : 700;
+  if (item.name === "White wine") return choices["format"] === "Bottle" ? 3200 : 750;
+  if (item.name === "Orange wine") return choices["format"] === "Bottle" ? 2500 : 650;
   return parsePrice(item.price);
 }
 
@@ -768,9 +768,9 @@ export function MenuContent() {
           <div className="menu-customization-quantity">
             <span className="menu-quantity-label">{t("Quantity")}</span>
             <div className="menu-quantity-control">
-              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label={t("Decrease quantity")}>−</Button>
+              <Button type="button" variant="outline" size="icon" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label={t("Decrease quantity")}>−</Button>
               <strong aria-live="polite">{customizingQuantity}</strong>
-              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label={t("Increase quantity")}>+</Button>
+              <Button type="button" variant="outline" size="icon" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label={t("Increase quantity")}>+</Button>
             </div>
           </div>
           <DialogFooter>
@@ -825,14 +825,14 @@ export function MenuContent() {
                       <span>{formatPrice(lineTotal)}</span>
                     </div>
                     <div className="menu-order-line-controls">
-                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, -1)} aria-label={`${t("Decrease quantity")}: ${localizeItemName(line.item.name, language)}`}>
+                      <Button type="button" variant="outline" size="icon" onClick={() => updateQuantity(line.id, -1)} aria-label={`${t("Decrease quantity")}: ${localizeItemName(line.item.name, language)}`}>
                         <Minus size={14} />
                       </Button>
                       <span>{line.quantity}</span>
-                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, 1)} aria-label={`${t("Increase quantity")}: ${localizeItemName(line.item.name, language)}`}>
+                      <Button type="button" variant="outline" size="icon" onClick={() => updateQuantity(line.id, 1)} aria-label={`${t("Increase quantity")}: ${localizeItemName(line.item.name, language)}`}>
                         <Plus size={14} />
                       </Button>
-                      <Button type="button" variant="ghost" size="icon-xs" onClick={() => setOrder((current) => current.filter((entry) => entry.id !== line.id))} aria-label={`${t("Remove")}: ${localizeItemName(line.item.name, language)}`}>
+                      <Button type="button" variant="ghost" size="icon" onClick={() => setOrder((current) => current.filter((entry) => entry.id !== line.id))} aria-label={`${t("Remove")}: ${localizeItemName(line.item.name, language)}`}>
                         <Trash2 size={14} />
                       </Button>
                     </div>
