@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
+import { useLanguage } from "@/lib/language";
 
 export function SiteFooter() {
+  const { t } = useLanguage();
   return (
     <footer className="site-footer">
       <div className="footer-top">
@@ -11,20 +13,20 @@ export function SiteFooter() {
       </div>
       <div className="footer-grid">
         <div>
-          <p className="micro-label">Come by</p>
+          <p className="micro-label">{t("Come by")}</p>
           <address>Rua Viriato 9B<br />1050-227 Lisboa, Portugal</address>
         </div>
         <div>
-          <p className="micro-label">Every day</p>
+          <p className="micro-label">{t("Every day")}</p>
           <p>08:00–17:00</p>
           <a href="https://wa.me/351927703617" target="_blank" rel="noreferrer">+351 927 703 617</a>
         </div>
         <nav aria-label="Footer navigation">
-          <a href="/#story">Our story</a>
-          <Link to="/menu">The menu</Link>
-          <a href="/#visit">Find us</a>
+          <Link to="/" hash="our-story">{t("Our story")}</Link>
+          <Link to="/menu">{t("The menu")}</Link>
+          <Link to="/" hash="find-us">{t("Find us")}</Link>
         </nav>
-        <p className="footer-copy">© 2026 Tomorrow at 9<br />Lisbon, Portugal<br /><br />Food photography via Pexels.</p>
+        <p className="footer-copy">© 2026 Tomorrow at 9<br />{t("Lisbon, Portugal")}<br /><br />{t("Food photography via Pexels.")}</p>
       </div>
     </footer>
   );
