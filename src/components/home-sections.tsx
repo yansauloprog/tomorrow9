@@ -7,6 +7,7 @@ import toastImage from "@/assets/uploads/2943.png";
 import bowlImage from "@/assets/uploads/2941.png";
 import dessertImage from "@/assets/uploads/2944.png";
 import pastryImage from "@/assets/uploads/2942.png";
+import sweetWaffleImage from "@/assets/uploads/2957.png";
 import kitchenMeatImage from "@/assets/uploads/2953.png";
 import kitchenShakshukaImage from "@/assets/uploads/2954.png";
 import kitchenBowlImage from "@/assets/uploads/2955.png";
@@ -152,12 +153,42 @@ export function MenuCallout() {
 export function SweetSection() {
   return (
     <section className="sweet-section">
-      <div className="sweet-title"><p className="micro-label">Pastries & desserts</p><h2>Pastries<br /><span>& desserts.</span></h2></div>
+      <div className="sweet-title">
+        <p className="micro-label">Pastries & desserts</p>
+        <h2>Pastries<br /><span>& desserts.</span></h2>
+      </div>
+
+      <figure className="sweet-feature photo-frame">
+        <img
+          src={sweetWaffleImage}
+          width="1122"
+          height="1402"
+          alt="Green waffle-style dessert topped with fresh strawberries"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
       <figure className="sweet-dessert photo-frame">
-        <img src={dessertImage} width="768" height="768" alt="Slice of dessert with caramel sauce on a ceramic plate" loading="lazy" />
+        <img
+          src={dessertImage}
+          width="768"
+          height="768"
+          alt="Slice of dessert with caramel sauce on a ceramic plate"
+          loading="lazy"
+        />
         <figcaption>A sweet pause in the Lisbon sun.</figcaption>
       </figure>
-      <div className="sweet-pastry photo-frame"><img src={pastryImage} width="768" height="768" alt="Chocolate pastry on a handmade ceramic plate" loading="lazy" /></div>
+
+      <div className="sweet-pastry photo-frame">
+        <img
+          src={pastryImage}
+          width="768"
+          height="768"
+          alt="Chocolate pastry on a handmade ceramic plate"
+          loading="lazy"
+        />
+      </div>
     </section>
   );
 }
