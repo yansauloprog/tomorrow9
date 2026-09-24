@@ -8,11 +8,11 @@ const BOOKING_URL =
   "https://wa.me/351927703617?text=Hello%21%20I%27d%20like%20to%20book%20a%20table%20at%20Tomorrow%20at%209.";
 
 const links = [
-  { label: "Home", href: "/#top" },
-  { label: "Our story", href: "/#our-story" },
-  { label: "The menu", href: "/menu" },
-  { label: "Find us", href: "/#find-us" },
-];
+  { label: "Home", to: "/", hash: "top" },
+  { label: "Our story", to: "/", hash: "our-story" },
+  { label: "The menu", to: "/menu" },
+  { label: "Find us", to: "/", hash: "find-us" },
+] as const;
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -32,26 +32,6 @@ export function SiteHeader() {
     return () => window.removeEventListener("keydown", close);
   }, [open]);
 
-  useEffect(() => {
-    const scrollToHashTarget = () => {
-      const targetId = window.location.hash.slice(1);
-      if (!targetId) return;
-
-      window.requestAnimationFrame(() => {
-        document.getElementById(targetId)?.scrollIntoView({
-          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-            ? "auto"
-            : "smooth",
-          block: "start",
-        });
-      });
-    };
-
-    scrollToHashTarget();
-    window.addEventListener("hashchange", scrollToHashTarget);
-    return () => window.removeEventListener("hashchange", scrollToHashTarget);
-  }, []);
-
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <div className="site-header-inner">
@@ -60,13 +40,11 @@ export function SiteHeader() {
           <span className="brand-wordmark">Tomorrow <span>at 9</span><sup>↗</sup></span>
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {links.map((link) =>
-            link.href === "/menu" ? (
-              <Link key={link.label} to="/menu" className="nav-link">{link.label}</Link>
-            ) : (
-              <a key={link.label} href={link.href} className="nav-link">{link.label}</a>
-            ),
-          )}
+          {links.map((link) => (
+            <Link key={link.label} to={link.to} hash={"hash" in link ? link.hash : undefined} className="nav-link">
+              {link.label}
+            </Link>
+          ))}
         </nav>
         <Button
           asChild
@@ -90,13 +68,11 @@ export function SiteHeader() {
           <span className="brand-wordmark">Tomorrow <span>at 9</span><sup>↗</sup></span>
         </Link>
         <nav aria-label="Mobile navigation">
-          {links.map((link) =>
-            link.href === "/menu" ? (
-              <Link key={link.label} to="/menu" onClick={() => setOpen(false)}>{link.label}</Link>
-            ) : (
-              <a key={link.label} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>
-            ),
-          )}
+          {links.map((link) => (
+            <Link key={link.label} to={link.to} hash={"hash" in link ? link.hash : undefined} onClick={() => setOpen(false)}>
+              {link.label}
+            </Link>
+          ))}
         </nav>
         <Button
           asChild
