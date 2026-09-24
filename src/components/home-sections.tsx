@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BOOKING_URL } from "@/components/site-header";
-import heroImage from "@/assets/uploads/2941.png";
+import heroImage from "@/assets/uploads/2947.png";
 import toastImage from "@/assets/uploads/2943.png";
 import bowlImage from "@/assets/uploads/2941.png";
 import dessertImage from "@/assets/uploads/2944.png";
@@ -26,7 +26,7 @@ export function HeroSection() {
         <div className="hero-details"><span>Rua Viriato 9B, Lisboa</span><span>08:00–17:00</span></div>
       </div>
       <div className="hero-image-wrap reveal-image">
-        <img src={heroImage} width="768" height="1024" alt="Breakfast bowl with banana, fruit, coconut and nuts in natural light" fetchPriority="high" />
+        <img src={heroImage} width="1122" height="1402" alt="Breakfast plate with eggs, hash browns, bacon, salad and coffee" fetchPriority="high" />
         <span className="image-stamp">More than<br />morning coffee</span>
       </div>
       <a className="scroll-cue" href="#story" aria-label="Scroll to our story"><ArrowDown size={18} /></a>
