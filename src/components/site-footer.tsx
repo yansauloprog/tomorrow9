@@ -22,7 +22,6 @@ export function SiteFooter() {
           <a href="https://wa.me/351927703617" target="_blank" rel="noreferrer">+351 927 703 617</a>
         </div>
         <nav aria-label="Footer navigation">
-          <Link to="/" hash="our-story">{t("Our story")}</Link>
           <Link to="/menu">{t("The menu")}</Link>
           <Link to="/" hash="find-us">{t("Find us")}</Link>
         </nav>

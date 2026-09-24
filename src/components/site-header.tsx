@@ -21,7 +21,6 @@ export function bookingUrl(language: Language) {
 
 const links = [
   { label: "Home", to: "/", hash: "top" },
-  { label: "Our story", to: "/", hash: "our-story" },
   { label: "The menu", to: "/menu" },
   { label: "Find us", to: "/", hash: "find-us" },
 ] as const;
