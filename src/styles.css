@@ -227,6 +227,10 @@ a { color: inherit; text-decoration: none; }
 
 .kitchen-gallery {
   display: grid;
+  max-width: 1120px;
+  margin-inline: auto;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+  grid-template-rows: auto auto;
   gap: 1rem;
 }
 
@@ -250,11 +254,12 @@ a { color: inherit; text-decoration: none; }
 }
 
 .kitchen-image-featured {
-  aspect-ratio: 4 / 5;
+  grid-row: 1 / 3;
+  aspect-ratio: 4 / 3;
 }
 
 .kitchen-image-shakshuka {
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 3;
 }
 
 .kitchen-image-pair {
@@ -264,7 +269,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .kitchen-image-pair .kitchen-image {
-  aspect-ratio: 1 / 1.12;
+  aspect-ratio: 1 / 1.08;
 }
 
 .menu-callout { position: relative; overflow: hidden; background: var(--primary); color: var(--primary-foreground); padding: 5rem 1.25rem 7rem; }
@@ -273,13 +278,7 @@ a { color: inherit; text-decoration: none; }
 .menu-callout h2 span { color: transparent; -webkit-text-stroke: 1.5px var(--primary-foreground); }
 .menu-callout-grid > div p { max-width: 25rem; font-size: 1.1rem; line-height: 1.5; }.menu-button { margin-top: 2rem; }
 .outline-run { position: absolute; bottom: -1.2rem; left: -1rem; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px color-mix(in oklab, var(--primary-foreground) 40%, transparent); font: 700 clamp(4rem, 10vw, 9rem)/1 var(--font-display); }
-.sweet-section { padding: 7rem 1.25rem; display: grid; gap: 2rem; }
-.sweet-title { padding-bottom: 2rem; }
-.sweet-title h2 { margin-top: 1.5rem; }
-.sweet-feature { aspect-ratio: 4 / 5; }
-.sweet-feature img { object-position: center; }
 .footer-logo-word,.footer-logo-accent { display: inline; }
-.sweet-dessert { aspect-ratio: 1; overflow: visible; }.sweet-dessert img { object-fit: cover; }.sweet-pastry { aspect-ratio: 1; margin: 2rem 10% 0; }
 .visit-section { scroll-margin-top: 6rem; padding: 7rem 1.25rem; border-top: 1px solid var(--border); }.visit-grid { display: grid; gap: 2rem; margin-top: 2rem; }
 .visit-grid address { font-style: normal; margin-top: .65rem; line-height: 1.6; }.visit-hours a { display: inline-block; margin-top: .75rem; border-bottom: 1px solid currentColor; }
 .visit-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 3rem; }
@@ -303,9 +302,17 @@ a { color: inherit; text-decoration: none; }
   .brunch-copy { padding-block: 1rem; }
   .kitchen-section { padding-block: 6rem 7rem; }
   .kitchen-heading { gap: 1.25rem; margin-bottom: 2.5rem; }
-  .kitchen-gallery { gap: .85rem; }
-  .kitchen-image-featured { aspect-ratio: 4 / 5; }
+  .kitchen-gallery {
+    grid-template-columns: 1fr;
+    gap: .85rem;
+  }
+  .kitchen-image-featured,
+  .kitchen-image-shakshuka {
+    grid-row: auto;
+    aspect-ratio: 4 / 3;
+  }
   .kitchen-image-pair { gap: .85rem; }
+  .kitchen-image-pair .kitchen-image { aspect-ratio: 1 / 1.05; }
   .brunch-image-small { margin-top: 0; }
   .footer-logo {
     white-space: normal;

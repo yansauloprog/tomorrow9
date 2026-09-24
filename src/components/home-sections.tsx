@@ -150,48 +150,6 @@ export function MenuCallout() {
   );
 }
 
-export function SweetSection() {
-  return (
-    <section className="sweet-section">
-      <div className="sweet-title">
-        <p className="micro-label">Pastries & desserts</p>
-        <h2>Pastries<br /><span>& desserts.</span></h2>
-      </div>
-
-      <figure className="sweet-feature photo-frame">
-        <img
-          src={sweetWaffleImage}
-          width="1122"
-          height="1402"
-          alt="Green waffle-style dessert topped with fresh strawberries"
-          loading="lazy"
-          decoding="async"
-        />
-      </figure>
-
-      <figure className="sweet-dessert photo-frame">
-        <img
-          src={dessertImage}
-          width="768"
-          height="768"
-          alt="Slice of dessert with caramel sauce on a ceramic plate"
-          loading="lazy"
-        />
-        <figcaption>A sweet pause in the Lisbon sun.</figcaption>
-      </figure>
-
-      <div className="sweet-pastry photo-frame">
-        <img
-          src={pastryImage}
-          width="768"
-          height="768"
-          alt="Chocolate pastry on a handmade ceramic plate"
-          loading="lazy"
-        />
-      </div>
-    </section>
-  );
-}
 
 export function VisitSection() {
   const directions = "https://www.google.com/maps/search/?api=1&query=Rua%20Viriato%209B%2C%201050-227%20Lisboa%2C%20Portugal";
