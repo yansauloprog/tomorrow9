@@ -61,8 +61,8 @@ function extraDetails(extra: string) {
   };
 }
 
-function getCustomization(item: Item): ItemCustomization {
-  const name = item.name.toLowerCase();
+function getCustomization(item?: Item): ItemCustomization {
+  const name = item?.name?.toLowerCase() ?? "";
 
   if (name === "halloumi breakfast" || name === "big breakfast") {
     return {
@@ -131,7 +131,7 @@ function getCustomization(item: Item): ItemCustomization {
     };
   }
 
-  return { extras: item.extras };
+  return { extras: item?.extras };
 }
 
 function getLineUnitPrice(line: OrderLine) {
@@ -717,7 +717,7 @@ export function MenuContent() {
           <div className="menu-customization-price">
             Base price: {formatPrice(customizing ? getChoicePrice(customizing, selectedChoices) : 0)}
           </div>
-          {getCustomization(customizing ?? {}).choices?.map((group) => (
+          {getCustomization(customizing).choices?.map((group) => (
             <fieldset className="menu-choice-group" key={group.id}>
               <legend>{group.label}</legend>
               <div className="menu-choice-options">
@@ -737,7 +737,7 @@ export function MenuContent() {
             </fieldset>
           ))}
           <div className="menu-extra-options">
-            {getCustomization(customizing ?? {}).extras?.map((extra) => {
+            {getCustomization(customizing).extras?.map((extra) => {
               const details = extraDetails(extra);
               const checked = selectedExtras.includes(extra);
               return (
@@ -770,7 +770,7 @@ export function MenuContent() {
             </DialogClose>
             <Button
               type="button"
-              disabled={Boolean(getCustomization(customizing ?? {}).choices?.some((group) => group.required && !selectedChoices[group.id]))}
+              disabled={Boolean(getCustomization(customizing).choices?.some((group) => group.required && !selectedChoices[group.id]))}
               onClick={() => {
                 if (customizing) addToOrder(customizing, selectedExtras, selectedChoices, customizingQuantity);
                 setCustomizing(null);
