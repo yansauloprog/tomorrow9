@@ -613,10 +613,6 @@ export function MenuContent() {
       "Please confirm availability and the order details.",
       "",
       "Thank you!",
-      }),
-      `Subtotal: ${formatPrice(subtotal)}`,
-      "",
-      "Thank you!",
     ];
 
     window.open(`https://wa.me/351927703617?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener,noreferrer");
