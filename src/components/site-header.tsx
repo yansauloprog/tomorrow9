@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import mascotImage from "@/assets/uploads/2950.png";
 
 const BOOKING_URL =
   "https://wa.me/351927703617?text=Hello%21%20I%27d%20like%20to%20book%20a%20table%20at%20Tomorrow%20at%209.";
@@ -35,7 +36,8 @@ export function SiteHeader() {
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <div className="site-header-inner">
         <Link to="/" className="brand-signature" aria-label="Tomorrow at 9 home">
-          Tomorrow <span>at 9</span><sup>↗</sup>
+          <img className="brand-mascot" src={mascotImage} alt="" aria-hidden="true" />
+          <span className="brand-wordmark">Tomorrow <span>at 9</span><sup>↗</sup></span>
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {links.map((link) =>
@@ -63,6 +65,10 @@ export function SiteHeader() {
         </Button>
       </div>
       <div id="mobile-menu" className={`mobile-menu ${open ? "is-open" : ""}`} aria-hidden={!open}>
+        <Link to="/" className="mobile-brand-signature" aria-label="Tomorrow at 9 home" onClick={() => setOpen(false)}>
+          <img className="brand-mascot" src={mascotImage} alt="" aria-hidden="true" />
+          <span className="brand-wordmark">Tomorrow <span>at 9</span><sup>↗</sup></span>
+        </Link>
         <nav aria-label="Mobile navigation">
           {links.map((link) =>
             link.href === "/menu" ? (
