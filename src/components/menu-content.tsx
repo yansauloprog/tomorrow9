@@ -20,19 +20,32 @@ type Item = {
   extras?: string[];
 };
 
+type ChoiceGroup = {
+  id: string;
+  label: string;
+  options: string[];
+  required?: boolean;
+};
+
+type ItemCustomization = {
+  choices?: ChoiceGroup[];
+  extras?: string[];
+};
+
 type OrderLine = {
   id: string;
   item: Item;
   extras: string[];
+  choices: Record<string, string>;
   quantity: number;
 };
 
 function parsePrice(value?: string) {
-  return Number.parseFloat(value?.replace("€", "").replace(",", ".") ?? "0") || 0;
+  return Math.round(Number.parseFloat(value?.replace("€", "").replace(",", ".") ?? "0") * 100) || 0;
 }
 
 function formatPrice(value: number) {
-  return `€${value.toFixed(2)}`;
+  return `€${(value / 100).toFixed(2)}`;
 }
 
 function splitDescription(description?: string) {
@@ -44,8 +57,94 @@ function extraDetails(extra: string) {
   const match = extra.match(/^(.*?)(?:\s+€(\d+(?:\.\d{2})?))$/);
   return {
     label: match?.[1] ?? extra,
-    price: match?.[2] ? Number.parseFloat(match[2]) : 0,
+    price: match?.[2] ? Math.round(Number.parseFloat(match[2]) * 100) : 0,
   };
+}
+
+function getCustomization(item: Item): ItemCustomization {
+  const name = item.name.toLowerCase();
+
+  if (name === "halloumi breakfast" || name === "big breakfast") {
+    return {
+      choices: [{
+        id: "eggs",
+        label: "Eggs",
+        options: ["Scrambled", "Fried", "Boiled"],
+        required: true,
+      }],
+      extras: item.extras,
+    };
+  }
+
+  if (name === "scramble toast") {
+    return {
+      choices: [{
+        id: "filling",
+        label: "Choose one",
+        options: ["Bacon", "Salmon", "Avocado"],
+        required: true,
+      }],
+    };
+  }
+
+  if (name === "benedict") {
+    return {
+      choices: [{
+        id: "topping",
+        label: "Choose one",
+        options: ["Salmon", "Bacon", "Avocado"],
+        required: true,
+      }],
+    };
+  }
+
+  if (name === "kombucha") {
+    return {
+      choices: [{
+        id: "flavour",
+        label: "Flavour",
+        options: ["Original", "Peppermint", "Strawberry", "Hibiscus", "Citrus Tropical", "Ginger"],
+        required: true,
+      }],
+    };
+  }
+
+  if (name === "wine") {
+    return {
+      choices: [{
+        id: "format",
+        label: "Format",
+        options: ["Glass", "Bottle"],
+        required: true,
+      }],
+    };
+  }
+
+  if (["cacao hot/cold", "chai latte hot/cold", "matcha hot/cold", "matcha miso hot/cold"].includes(name)) {
+    return {
+      choices: [{
+        id: "temperature",
+        label: "Temperature",
+        options: ["Hot", "Cold"],
+        required: true,
+      }],
+    };
+  }
+
+  return { extras: item.extras };
+}
+
+function getLineUnitPrice(line: OrderLine) {
+  return parsePrice(line.item.price) +
+    line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0) +
+    (line.choices.format === "Glass" ? 0 : 0);
+}
+
+function getChoicePrice(item: Item, choices: Record<string, string>) {
+  if (item.name === "Sparkling wine") return choices.format === "Glass" ? 700 : 3000;
+  if (item.name === "White wine") return choices.format === "Glass" ? 750 : 3200;
+  if (item.name === "Orange wine") return choices.format === "Glass" ? 650 : 2500;
+  return parsePrice(item.price);
 }
 
 type Section = {
@@ -403,6 +502,7 @@ const categoryLinks = [
 ];
 
 function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) {
+  const customization = getCustomization(item);
   const descriptions = splitDescription(item.description);
 
   return (
@@ -431,8 +531,9 @@ function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) 
         size="sm"
         className="menu-add-button"
         onClick={() => onAdd(item)}
+        aria-label={`Add ${item.name} to order`}
       >
-        Add
+        Add +
       </Button>
     </article>
   );
@@ -443,23 +544,34 @@ export function MenuContent() {
   const [order, setOrder] = useState<OrderLine[]>([]);
   const [customizing, setCustomizing] = useState<Item | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
+  const [selectedChoices, setSelectedChoices] = useState<Record<string, string>>({});
+  const [customizingQuantity, setCustomizingQuantity] = useState(1);
   const [orderOpen, setOrderOpen] = useState(false);
+  const [orderNotes, setOrderNotes] = useState("");
 
-  const addToOrder = (item: Item, extras: string[] = []) => {
-    const id = `${item.name}-${extras.join("|")}`;
+  const addToOrder = (
+    item: Item,
+    extras: string[] = [],
+    choices: Record<string, string> = {},
+    quantity = 1,
+  ) => {
+    const id = `${item.name}-${extras.join("|")}-${JSON.stringify(choices)}`;
     setOrder((current) => {
       const existing = current.find((line) => line.id === id);
       if (existing) {
-        return current.map((line) => line.id === id ? { ...line, quantity: line.quantity + 1 } : line);
+        return current.map((line) => line.id === id ? { ...line, quantity: line.quantity + quantity } : line);
       }
-      return [...current, { id, item, extras, quantity: 1 }];
+      return [...current, { id, item, extras, choices, quantity }];
     });
   };
 
   const handleAdd = (item: Item) => {
-    if (item.extras?.length) {
+    const customization = getCustomization(item);
+    if (customization.extras?.length || customization.choices?.length) {
       setCustomizing(item);
       setSelectedExtras([]);
+      setSelectedChoices({});
+      setCustomizingQuantity(1);
       return;
     }
     addToOrder(item);
@@ -474,8 +586,8 @@ export function MenuContent() {
   };
 
   const subtotal = order.reduce((total, line) => {
-    const extrasTotal = line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
-    return total + (parsePrice(line.item.price) + extrasTotal) * line.quantity;
+    return total + getChoicePrice(line.item, line.choices) * line.quantity +
+      line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0) * line.quantity;
   }, 0);
 
   const sendOrder = () => {
@@ -484,12 +596,23 @@ export function MenuContent() {
       "",
       "Order:",
       ...order.flatMap((line) => {
-        const itemTotal = parsePrice(line.item.price) + line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
+        const itemTotal = getChoicePrice(line.item, line.choices) +
+          line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
         return [
-          `- ${line.quantity}x ${line.item.name} (${formatPrice(itemTotal)} each)`,
+          `${line.quantity}x ${line.item.name}`,
+          ...Object.values(line.choices).map((choice) => `  + ${choice}`),
           ...line.extras.map((extra) => `  + ${extraDetails(extra).label} (${formatPrice(extraDetails(extra).price)})`),
+          `Unit price: ${formatPrice(itemTotal)}`,
+          `Line total: ${formatPrice(itemTotal * line.quantity)}`,
           "",
         ];
+      }),
+      ...(orderNotes.trim() ? ["Order notes:", orderNotes.trim(), ""] : []),
+      `TOTAL: ${formatPrice(subtotal)}`,
+      "",
+      "Please confirm availability and the order details.",
+      "",
+      "Thank you!",
       }),
       `Subtotal: ${formatPrice(subtotal)}`,
       "",
@@ -586,10 +709,31 @@ export function MenuContent() {
         <DialogContent className="menu-order-dialog">
           <DialogHeader>
             <DialogTitle>Add {customizing?.name}</DialogTitle>
-            <DialogDescription>Select any extras you would like to add.</DialogDescription>
+            <DialogDescription>Select the options for this item, then add it to your order.</DialogDescription>
           </DialogHeader>
+          <div className="menu-customization-price">
+            Base price: {formatPrice(customizing ? getChoicePrice(customizing, selectedChoices) : 0)}
+          </div>
+          {getCustomization(customizing ?? {}).choices?.map((group) => (
+            <fieldset className="menu-choice-group" key={group.id}>
+              <legend>{group.label}</legend>
+              <div className="menu-choice-options">
+                {group.options.map((option) => (
+                  <label key={option} className={`menu-choice-option ${selectedChoices[group.id] === option ? "is-selected" : ""}`}>
+                    <input
+                      type="radio"
+                      name={group.id}
+                      checked={selectedChoices[group.id] === option}
+                      onChange={() => setSelectedChoices((current) => ({ ...current, [group.id]: option }))}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
           <div className="menu-extra-options">
-            {customizing?.extras?.map((extra) => {
+            {getCustomization(customizing ?? {}).extras?.map((extra) => {
               const details = extraDetails(extra);
               const checked = selectedExtras.includes(extra);
               return (
@@ -607,14 +751,20 @@ export function MenuContent() {
               );
             })}
           </div>
+          <div className="menu-customization-quantity">
+            <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity">−</Button>
+            <strong>{customizingQuantity}</strong>
+            <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label="Increase quantity">+</Button>
+          </div>
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="ghost">Cancel</Button>
             </DialogClose>
             <Button
               type="button"
+              disabled={Boolean(getCustomization(customizing ?? {}).choices?.some((group) => group.required && !selectedChoices[group.id]))}
               onClick={() => {
-                if (customizing) addToOrder(customizing, selectedExtras);
+                if (customizing) addToOrder(customizing, selectedExtras, selectedChoices, customizingQuantity);
                 setCustomizing(null);
               }}
             >
@@ -634,18 +784,24 @@ export function MenuContent() {
           </DialogHeader>
 
           {order.length === 0 ? (
-            <p className="menu-empty-order">Your order is empty.</p>
+            <div className="menu-empty-order">
+              <p>Your order is empty.</p>
+              <p>Add something from the menu to get started.</p>
+            </div>
           ) : (
             <div className="menu-order-lines">
               {order.map((line) => {
-                const extrasTotal = line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
-                const lineTotal = (parsePrice(line.item.price) + extrasTotal) * line.quantity;
+                const lineTotal = (
+                  getChoicePrice(line.item, line.choices) +
+                  line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0)
+                ) * line.quantity;
                 return (
                   <div className="menu-order-line" key={line.id}>
                     <div className="menu-order-line-copy">
                       <strong>{line.item.name}</strong>
-                      {line.extras.length > 0 && (
+                      {(line.extras.length > 0 || Object.keys(line.choices).length > 0) && (
                         <ul>
+                          {Object.values(line.choices).map((choice) => <li key={choice}>+ {choice}</li>)}
                           {line.extras.map((extra) => <li key={extra}>+ {extraDetails(extra).label}</li>)}
                         </ul>
                       )}
@@ -670,8 +826,18 @@ export function MenuContent() {
                 <span>Subtotal</span>
                 <strong>{formatPrice(subtotal)}</strong>
               </div>
+              <label className="menu-order-notes">
+                <span>Order notes</span>
+                <textarea
+                  value={orderNotes}
+                  onChange={(event) => setOrderNotes(event.target.value)}
+                  placeholder="Anything you'd like us to know?"
+                  rows={3}
+                />
+              </label>
+              <p className="menu-order-disclaimer">Your order will be confirmed by the café via WhatsApp.</p>
               <Button type="button" className="menu-whatsapp-button" onClick={sendOrder}>
-                Order on WhatsApp <ArrowUpRight size={16} />
+                Send order via WhatsApp <ArrowUpRight size={16} />
               </Button>
             </div>
           )}
@@ -680,7 +846,7 @@ export function MenuContent() {
 
       <section className="menu-closing">
         <p className="eyebrow">Tomorrow at 9 · Lisbon</p>
-        <h2>Ready to<br /><span>order?</span></h2>
+        <h2>The<br /><span>menu.</span></h2>
         <p>Breakfast, brunch, lunch and specialty coffee in Lisbon.</p>
         <Button asChild className="menu-booking-button">
           <a href={BOOKING_URL} target="_blank" rel="noreferrer">

@@ -41,7 +41,7 @@ export function HeroSection() {
 export function StorySection() {
   return (
     <section id="story" className="story-section">
-      <p className="micro-label">01 / Our kind of morning</p>
+      <p className="micro-label">Our kind of morning</p>
       <div className="story-heading">
         <h2>Breakfast.<br /><span>Brunch.</span><br />Specialty coffee.</h2>
         <p>Breakfast, brunch and specialty coffee in Lisbon.</p>
