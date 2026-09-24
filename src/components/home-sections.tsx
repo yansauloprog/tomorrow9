@@ -43,8 +43,8 @@ export function StorySection() {
     <section id="story" className="story-section">
       <p className="micro-label">01 / Our kind of morning</p>
       <div className="story-heading">
-        <h2>Good mornings.<br /><span>Great coffee.</span><br />Better company.</h2>
-        <p>From your first coffee to your favourite brunch, we're here to make everyday mornings a little more special.</p>
+        <h2>Breakfast.<br /><span>Brunch.</span><br />Specialty coffee.</h2>
+        <p>Breakfast, brunch and specialty coffee in Lisbon.</p>
       </div>
     </section>
   );
@@ -57,9 +57,9 @@ export function BrunchSection() {
         <img src={toastImage} width="1024" height="768" alt="Salmon toast with tomato, cream cheese and fresh herbs" loading="lazy" />
       </div>
       <div className="brunch-copy">
-        <p className="micro-label">02 / Brunch & coffee</p>
-        <h2>Made for<br /><span>slow mornings.</span></h2>
-        <p>Something savoury, something sweet, and always time for coffee.</p>
+        <p className="micro-label">Breakfast & brunch</p>
+        <h2>Breakfast<br /><span>& brunch.</span></h2>
+        <p>From savoury breakfasts to something sweet, explore our brunch menu.</p>
       </div>
       <figure className="brunch-image-small photo-frame">
         <img src={bowlImage} width="768" height="768" alt="Breakfast bowl with banana, fruit, coconut and nuts" loading="lazy" />
@@ -72,11 +72,11 @@ export function BrunchSection() {
 export function MenuCallout() {
   return (
     <section className="menu-callout">
-      <p className="micro-label">03 / The menu</p>
+      <p className="micro-label">The menu</p>
       <div className="menu-callout-grid">
-        <h2>A little something<br /><span>for every craving.</span></h2>
+        <h2>Explore<br /><span>our menu.</span></h2>
         <div>
-          <p>Breakfast, brunch, specialty coffee and everything in between.</p>
+          <p>Breakfast, brunch, lunch and specialty coffee.</p>
           <Button
             asChild
             className="menu-button !border !border-foreground !bg-background !text-foreground transition-colors duration-200 hover:!border-foreground hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
@@ -93,7 +93,7 @@ export function MenuCallout() {
 export function SweetSection() {
   return (
     <section className="sweet-section">
-      <div className="sweet-title"><p className="micro-label">04 / Sweet moments</p><h2>Something sweet<br /><span>for the moment.</span></h2></div>
+      <div className="sweet-title"><p className="micro-label">Pastries & desserts</p><h2>Pastries<br /><span>& desserts.</span></h2></div>
       <figure className="sweet-dessert photo-frame">
         <img src={dessertImage} width="768" height="768" alt="Slice of dessert with caramel sauce on a ceramic plate" loading="lazy" />
         <figcaption>A sweet pause in the Lisbon sun.</figcaption>
@@ -107,7 +107,7 @@ export function VisitSection() {
   const directions = "https://www.google.com/maps/search/?api=1&query=Rua%20Viriato%209B%2C%201050-227%20Lisboa%2C%20Portugal";
   return (
     <section id="visit" className="visit-section">
-      <p className="micro-label">05 / Drop in</p>
+      <p className="micro-label">Find us in Lisbon</p>
       <div className="visit-grid">
         <h2>Find us<br /><span>in Lisbon.</span></h2>
         <div className="visit-address"><p>Tomorrow at 9</p><address>Rua Viriato 9B,<br />1050-227 Lisboa,<br />Portugal.</address></div>

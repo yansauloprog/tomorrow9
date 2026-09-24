@@ -515,7 +515,7 @@ export function MenuContent() {
     <main className="editorial-menu">
       <section className="menu-hero">
         <p className="eyebrow">The menu · Lisbon</p>
-        <h1>Good things<br /><span>start here.</span></h1>
+        <h1>The<br /><span>menu.</span></h1>
         <div className="menu-hero-meta">
           <p>Breakfast · Brunch · Lunch · Specialty coffee</p>
           <p>08:00–17:00</p>
@@ -551,11 +551,10 @@ export function MenuContent() {
           >
             {section.tone === "coffee" && index === 7 && (
               <div className="coffee-divider" aria-hidden="true">
-                <span>coffee,</span><strong>of course.</strong>
+                <strong>Specialty<br />coffee.</strong>
               </div>
             )}
             <div className="menu-category-header">
-              <span className="menu-category-number">{String(index + 1).padStart(2, "0")}</span>
               <h2 className={section.tone === "outline" ? "is-outline" : ""}>{section.title}</h2>
             </div>
             <div className="menu-items">
@@ -680,9 +679,9 @@ export function MenuContent() {
       </Dialog>
 
       <section className="menu-closing">
-        <p className="eyebrow">A slow morning, well spent</p>
+        <p className="eyebrow">Tomorrow at 9 · Lisbon</p>
         <h2>Ready to<br /><span>order?</span></h2>
-        <p>WhatsApp ordering is coming in the next step.</p>
+        <p>Breakfast, brunch, lunch and specialty coffee in Lisbon.</p>
         <Button asChild className="menu-booking-button">
           <a href={BOOKING_URL} target="_blank" rel="noreferrer">
             Book a table <ArrowUpRight size={16} />
