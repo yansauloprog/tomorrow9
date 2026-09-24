@@ -20,9 +20,9 @@ export function SiteFooter() {
           <a href="https://wa.me/351927703617" target="_blank" rel="noreferrer">+351 927 703 617</a>
         </div>
         <nav aria-label="Footer navigation">
-          <a href="/#story">Our story</a>
+          <Link to="/" hash="our-story">Our story</Link>
           <Link to="/menu">The menu</Link>
-          <a href="/#visit">Find us</a>
+          <Link to="/" hash="find-us">Find us</Link>
         </nav>
         <p className="footer-copy">© 2026 Tomorrow at 9<br />Lisbon, Portugal</p>
       </div>
