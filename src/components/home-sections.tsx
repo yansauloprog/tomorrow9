@@ -33,7 +33,7 @@ export function HeroSection() {
         <img src={heroImage} width="1122" height="1402" alt="Breakfast plate with eggs, hash browns, bacon, salad and coffee" fetchPriority="high" />
         <span className="image-stamp">More than<br />morning coffee</span>
       </div>
-      <a className="scroll-cue" href="#story" aria-label="Scroll to our story"><ArrowDown size={18} /></a>
+      <Link className="scroll-cue" to="/" hash="our-story" aria-label="Scroll to our story"><ArrowDown size={18} /></Link>
     </section>
   );
 }
