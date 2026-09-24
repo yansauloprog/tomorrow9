@@ -565,6 +565,18 @@ export function MenuContent() {
   const [orderOpen, setOrderOpen] = useState(false);
   const [orderNotes, setOrderNotes] = useState("");
 
+  useEffect(() => {
+    const openOrder = () => setOrderOpen(true);
+    window.addEventListener("tomorrow9:open-order", openOrder);
+    return () => window.removeEventListener("tomorrow9:open-order", openOrder);
+  }, []);
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("tomorrow9:order-state", {
+      detail: { count: order.reduce((sum, line) => sum + line.quantity, 0) },
+    }));
+  }, [order]);
+
   const addToOrder = (
     item: Item,
     extras: string[] = [],
@@ -608,27 +620,27 @@ export function MenuContent() {
 
   const sendOrder = () => {
     const lines = [
-      "Hello! I’d like to place an order at Tomorrow at 9.",
+      t("Hello! I’d like to place an order at Tomorrow at 9."),
       "",
-      "Order:",
+      t("Order:"),
       ...order.flatMap((line) => {
         const itemTotal = getChoicePrice(line.item, line.choices) +
           line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
         return [
-          `${line.quantity}x ${line.item.name}`,
-          ...Object.values(line.choices).map((choice) => `  + ${choice}`),
-          ...line.extras.map((extra) => `  + ${extraDetails(extra).label} (${formatPrice(extraDetails(extra).price)})`),
-          `Unit price: ${formatPrice(itemTotal)}`,
-          `Line total: ${formatPrice(itemTotal * line.quantity)}`,
+          `${line.quantity}x ${localizeItemName(line.item.name, language)}`,
+          ...Object.values(line.choices).map((choice) => `  + ${t(choice)}`),
+          ...line.extras.map((extra) => `  + ${localizeExtra(extraDetails(extra).label, language, t)} (${formatPrice(extraDetails(extra).price)})`),
+          `${t("Unit price:")} ${formatPrice(itemTotal)}`,
+          `${t("Line total:")} ${formatPrice(itemTotal * line.quantity)}`,
           "",
         ];
       }),
-      ...(orderNotes.trim() ? ["Order notes:", orderNotes.trim(), ""] : []),
-      `TOTAL: ${formatPrice(subtotal)}`,
+      ...(orderNotes.trim() ? [t("Order notes:"), orderNotes.trim(), ""] : []),
+      `${t("TOTAL:")} ${formatPrice(subtotal)}`,
       "",
-      "Please confirm availability and the order details.",
+      t("Please confirm availability and the order details."),
       "",
-      "Thank you!",
+      t("Thank you!"),
     ];
 
     window.open(`https://wa.me/351927703617?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener,noreferrer");
@@ -649,16 +661,16 @@ export function MenuContent() {
   return (
     <main className="editorial-menu">
       <section className="menu-hero">
-        <p className="eyebrow">The menu · Lisbon</p>
-        <h1>The<br /><span>menu.</span></h1>
+        <p className="eyebrow">{t("The menu · Lisbon")}</p>
+        <h1>{t("The menu")}</h1>
         <div className="menu-hero-meta">
-          <p>Breakfast · Brunch · Lunch · Specialty coffee</p>
+          <p>{t("Breakfast · Brunch · Lunch · Specialty coffee")}</p>
           <p>08:00–17:00</p>
         </div>
-        <p className="menu-allergens">Please ask our team about allergens.</p>
+        <p className="menu-allergens">{t("Please ask our team about allergens.")}</p>
       </section>
 
-      <nav className="menu-category-nav" aria-label="Menu categories">
+      <nav className="menu-category-nav" aria-label={t("Menu categories")}>
         <div className="menu-category-nav-inner">
           {categoryLinks.map((id) => {
             const section = sections.find((entry) => entry.id === id);
@@ -670,7 +682,7 @@ export function MenuContent() {
                 className={active === id ? "is-active" : ""}
                 aria-current={active === id ? "location" : undefined}
               >
-                {section.label}
+                {t(section.label)}
               </a>
             );
           })}
@@ -686,20 +698,19 @@ export function MenuContent() {
           >
             {section.tone === "coffee" && index === 7 && (
               <div className="coffee-divider" aria-hidden="true">
-                <strong>Specialty<br />coffee.</strong>
+                <strong>{t("Specialty coffee.")}</strong>
               </div>
             )}
             <div className="menu-category-header">
-              <h2 className={section.tone === "outline" ? "is-outline" : ""}>{section.title}</h2>
+              <h2 className={section.tone === "outline" ? "is-outline" : ""}>{t(section.title)}</h2>
             </div>
             <div className="menu-items">
               {section.items.map((item) => <MenuItem key={item.name} item={item} onAdd={handleAdd} />)}
             </div>
             {section.id === "toasts" && (
               <p className="menu-allergen-note">
-                <strong>Allergens</strong><br />
-                Por favor solicite informação sobre alergénios, dos produtos não pré-embalados, junto dos funcionários.<br />
-                Please ask a staff member for information on food allergens.
+                <strong>{t("Allergens")}</strong><br />
+                {t("Please ask a staff member for information on food allergens.")}
               </p>
             )}
           </section>
@@ -710,10 +721,10 @@ export function MenuContent() {
         type="button"
         className="menu-order-trigger"
         onClick={() => setOrderOpen(true)}
-        aria-label={`View order${order.length ? `, ${order.reduce((sum, line) => sum + line.quantity, 0)} items` : ""}`}
+        aria-label={`${t("View order")}${order.length ? `, ${order.reduce((sum, line) => sum + line.quantity, 0)} ${t("items")}` : ""}`}
       >
         <ShoppingBag size={17} />
-        <span>Your order</span>
+        <span>{t("Your order")}</span>
         {order.length > 0 && <strong>{order.reduce((sum, line) => sum + line.quantity, 0)}</strong>}
       </Button>
 
