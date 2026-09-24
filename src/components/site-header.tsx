@@ -80,12 +80,12 @@ export function SiteHeader() {
         </nav>
         <Button
           asChild
-          className="hidden !border-primary !bg-primary !text-foreground hover:!border-foreground hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:inline-flex"
+          className="hidden !border-primary !bg-primary !text-foreground hover:!border-foreground hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background xl:inline-flex"
         >
           <a href={bookingUrl(language)} target="_blank" rel="noreferrer">{t("Book a table")} <ArrowUpRight size={15} /></a>
         </Button>
         <Button
-          className="size-11 !border-primary !bg-primary p-0 !text-primary-foreground hover:!border-foreground hover:!bg-foreground hover:!text-primary-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
+          className="size-11 !border-primary !bg-primary p-0 !text-primary-foreground hover:!border-foreground hover:!bg-foreground hover:!text-primary-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background xl:hidden"
           aria-label={t(open ? "Close menu" : "Open menu")}
           aria-expanded={open}
           aria-controls="mobile-menu"
