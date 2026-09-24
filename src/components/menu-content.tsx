@@ -731,15 +731,15 @@ export function MenuContent() {
       <Dialog open={customizing !== null} onOpenChange={(open) => !open && setCustomizing(null)}>
         <DialogContent className="menu-order-dialog">
           <DialogHeader>
-            <DialogTitle>Add {customizing?.name}</DialogTitle>
-            <DialogDescription>Select the options for this item, then add it to your order.</DialogDescription>
+            <DialogTitle>{t("Add")} {customizing && localizeItemName(customizing.name, language)}</DialogTitle>
+            <DialogDescription>{t("Select the options for this item, then add it to your order.")}</DialogDescription>
           </DialogHeader>
           <div className="menu-customization-price">
-            Base price: {formatPrice(customizing ? getChoicePrice(customizing, selectedChoices) : 0)}
+            {t("Base price:")} {formatPrice(customizing ? getChoicePrice(customizing, selectedChoices) : 0)}
           </div>
           {getCustomization(customizing).choices?.map((group) => (
             <fieldset className="menu-choice-group" key={group.id}>
-              <legend>{group.label}</legend>
+              <legend>{t(group.label)}</legend>
               <div className="menu-choice-options">
                 {group.options.map((option) => (
                   <label key={option} className={`menu-choice-option ${selectedChoices[group.id] === option ? "is-selected" : ""}`}>
@@ -750,7 +750,7 @@ export function MenuContent() {
                       onChange={() => setSelectedChoices((current) => ({ ...current, [group.id]: option }))}
                     />
                     <span className="menu-choice-indicator" aria-hidden="true" />
-                    <span>{option}</span>
+                    <span>{t(option)}</span>
                   </label>
                 ))}
               </div>
@@ -770,23 +770,23 @@ export function MenuContent() {
                     )}
                   />
                   <span className="menu-extra-indicator" aria-hidden="true" />
-                  <span>{details.label}</span>
+                  <span>{localizeExtra(details.label, language, t)}</span>
                   <strong>+{formatPrice(details.price)}</strong>
                 </label>
               );
             })}
           </div>
           <div className="menu-customization-quantity">
-            <span className="menu-quantity-label">Quantity</span>
+            <span className="menu-quantity-label">{t("Quantity")}</span>
             <div className="menu-quantity-control">
-              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity">−</Button>
+              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label={t("Decrease quantity")}>−</Button>
               <strong aria-live="polite">{customizingQuantity}</strong>
-              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label="Increase quantity">+</Button>
+              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label={t("Increase quantity")}>+</Button>
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="ghost">Cancel</Button>
+              <Button type="button" variant="ghost">{t("Cancel")}</Button>
             </DialogClose>
             <Button
               type="button"
@@ -796,7 +796,7 @@ export function MenuContent() {
                 setCustomizing(null);
               }}
             >
-              Add to order
+              {t("Add to order")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -805,16 +805,16 @@ export function MenuContent() {
       <Dialog open={orderOpen} onOpenChange={setOrderOpen}>
         <DialogContent className="menu-order-dialog menu-summary-dialog">
           <DialogHeader>
-            <DialogTitle>Your order</DialogTitle>
+            <DialogTitle>{t("Your order")}</DialogTitle>
             <DialogDescription>
-              {order.length ? "Review your order before sending it via WhatsApp." : "Add something from the menu to get started."}
+              {t(order.length ? "Review your order before sending it via WhatsApp." : "Add something from the menu to get started.")}
             </DialogDescription>
           </DialogHeader>
 
           {order.length === 0 ? (
             <div className="menu-empty-order">
-              <p>Your order is empty.</p>
-              <p>Add something from the menu to get started.</p>
+              <p>{t("Your order is empty.")}</p>
+              <p>{t("Add something from the menu to get started.")}</p>
             </div>
           ) : (
             <div className="menu-order-lines">
@@ -826,24 +826,24 @@ export function MenuContent() {
                 return (
                   <div className="menu-order-line" key={line.id}>
                     <div className="menu-order-line-copy">
-                      <strong>{line.item.name}</strong>
+                      <strong>{localizeItemName(line.item.name, language)}</strong>
                       {(line.extras.length > 0 || Object.keys(line.choices).length > 0) && (
                         <ul>
-                          {Object.values(line.choices).map((choice) => <li key={choice}>+ {choice}</li>)}
-                          {line.extras.map((extra) => <li key={extra}>+ {extraDetails(extra).label}</li>)}
+                          {Object.values(line.choices).map((choice) => <li key={choice}>+ {t(choice)}</li>)}
+                          {line.extras.map((extra) => <li key={extra}>+ {localizeExtra(extraDetails(extra).label, language, t)}</li>)}
                         </ul>
                       )}
                       <span>{formatPrice(lineTotal)}</span>
                     </div>
                     <div className="menu-order-line-controls">
-                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, -1)} aria-label={`Remove one ${line.item.name}`}>
+                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, -1)} aria-label={`${t("Decrease quantity")}: ${localizeItemName(line.item.name, language)}`}>
                         <Minus size={14} />
                       </Button>
                       <span>{line.quantity}</span>
-                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, 1)} aria-label={`Add one ${line.item.name}`}>
+                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, 1)} aria-label={`${t("Increase quantity")}: ${localizeItemName(line.item.name, language)}`}>
                         <Plus size={14} />
                       </Button>
-                      <Button type="button" variant="ghost" size="icon-xs" onClick={() => setOrder((current) => current.filter((entry) => entry.id !== line.id))} aria-label={`Remove ${line.item.name}`}>
+                      <Button type="button" variant="ghost" size="icon-xs" onClick={() => setOrder((current) => current.filter((entry) => entry.id !== line.id))} aria-label={`${t("Remove")}: ${localizeItemName(line.item.name, language)}`}>
                         <Trash2 size={14} />
                       </Button>
                     </div>
@@ -851,21 +851,21 @@ export function MenuContent() {
                 );
               })}
               <div className="menu-order-subtotal">
-                <span>Subtotal</span>
+                <span>{t("Subtotal")}</span>
                 <strong>{formatPrice(subtotal)}</strong>
               </div>
               <label className="menu-order-notes">
-                <span>Order notes</span>
+                <span>{t("Order notes")}</span>
                 <textarea
                   value={orderNotes}
                   onChange={(event) => setOrderNotes(event.target.value)}
-                  placeholder="Anything you'd like us to know?"
+                  placeholder={t("Anything you'd like us to know?")}
                   rows={3}
                 />
               </label>
-              <p className="menu-order-disclaimer">Your order will be confirmed by the café via WhatsApp.</p>
+              <p className="menu-order-disclaimer">{t("Your order will be confirmed by the café via WhatsApp.")}</p>
               <Button type="button" className="menu-whatsapp-button" onClick={sendOrder}>
-                Send order via WhatsApp <ArrowUpRight size={16} />
+                {t("Send order via WhatsApp")} <ArrowUpRight size={16} />
               </Button>
             </div>
           )}
@@ -873,15 +873,15 @@ export function MenuContent() {
       </Dialog>
 
       <section className="menu-closing">
-        <p className="eyebrow">Tomorrow at 9 · Lisbon</p>
-        <h2>The<br /><span>menu.</span></h2>
-        <p>Breakfast, brunch, lunch and specialty coffee in Lisbon.</p>
+        <p className="eyebrow">Tomorrow at 9 · {language === "en" ? "Lisbon" : "Lisboa"}</p>
+        <h2>{t("The menu")}</h2>
+        <p>{t("Breakfast, brunch and lunch in Lisbon.")} {t("Specialty coffee.")}</p>
         <Button asChild className="menu-booking-button">
-          <a href={BOOKING_URL} target="_blank" rel="noreferrer">
-            Book a table <ArrowUpRight size={16} />
+          <a href={bookingUrl(language)} target="_blank" rel="noreferrer">
+            {t("Book a table")} <ArrowUpRight size={16} />
           </a>
         </Button>
-        <Link to="/" className="menu-back-home">Back home ↗</Link>
+        <Link to="/" className="menu-back-home">{t("Back home ↗")}</Link>
       </section>
     </main>
   );
