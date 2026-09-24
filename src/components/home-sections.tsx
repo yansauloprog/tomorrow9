@@ -73,7 +73,10 @@ export function MenuCallout() {
         <h2>A little something<br /><span>for every craving.</span></h2>
         <div>
           <p>Breakfast, brunch, specialty coffee and everything in between.</p>
-          <Button asChild className="menu-button bg-background text-foreground hover:bg-foreground hover:text-background">
+          <Button
+            asChild
+            className="menu-button !border !border-foreground !bg-background !text-foreground transition-colors duration-200 hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+          >
             <Link to="/menu">Explore the menu <ArrowUpRight size={18} /></Link>
           </Button>
         </div>
