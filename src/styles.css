@@ -266,15 +266,132 @@ a { color: inherit; text-decoration: none; }
 .menu-item-extras { display: flex; flex-wrap: wrap; gap: .55rem 1.5rem; margin: .8rem 0 0; padding: 0; color: var(--primary); font-size: .78rem; line-height: 1.5; list-style: none; }
 .menu-item-description p { margin: 0; }
 .menu-item-description-en { margin-top: .2rem !important; opacity: .82; }
-.menu-add-button { margin-top: 1rem; }
-.menu-choice-group { border: 0; margin: 0 0 1rem; padding: 0; }
-.menu-choice-group legend { margin-bottom: .55rem; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.menu-choice-options { display: flex; flex-wrap: wrap; gap: .5rem; }
-.menu-choice-option { display: inline-flex; cursor: pointer; align-items: center; gap: .45rem; border: 1px solid var(--border); padding: .55rem .7rem; font-size: .78rem; }
-.menu-choice-option.is-selected { border-color: var(--primary); color: var(--primary); }
-.menu-choice-option input { accent-color: var(--primary); }
-.menu-customization-price { margin-bottom: 1.25rem; color: var(--muted-foreground); font-size: .8rem; }
-.menu-customization-quantity { display: flex; align-items: center; gap: .8rem; margin: 1rem 0; }
+
+.menu-add-button {
+  min-height: 2.25rem;
+  margin-top: 1rem;
+  border: 1px solid var(--foreground);
+  border-radius: 0;
+  background: transparent;
+  color: var(--foreground);
+  padding-inline: .8rem;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  transition: background-color .2s, border-color .2s, color .2s;
+}
+.menu-add-button:hover,
+.menu-add-button:focus-visible {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.menu-add-button:active { background: var(--primary); color: var(--primary-foreground); }
+.menu-add-button.is-added {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.menu-choice-group { border: 0; margin: 0 0 1.25rem; padding: 0; }
+.menu-choice-group legend { margin-bottom: .65rem; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.menu-choice-options { display: grid; gap: .35rem; }
+.menu-choice-option {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  gap: .7rem;
+  min-height: 2.75rem;
+  border-block: 1px solid transparent;
+  padding: .55rem .65rem;
+  font-size: .82rem;
+  transition: background-color .2s, border-color .2s, color .2s;
+}
+.menu-choice-option:hover,
+.menu-choice-option:focus-within,
+.menu-choice-option.is-selected {
+  border-color: color-mix(in oklab, var(--primary) 45%, transparent);
+  background: color-mix(in oklab, var(--secondary) 72%, transparent);
+}
+.menu-choice-option.is-selected { color: var(--foreground); }
+.menu-choice-option input,
+.menu-extra-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.menu-choice-indicator,
+.menu-extra-indicator {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: .95rem;
+  height: .95rem;
+  border: 1px solid var(--muted-foreground);
+  transition: border-color .2s, background-color .2s, transform .2s;
+}
+.menu-choice-indicator { border-radius: 50%; }
+.menu-choice-option.is-selected .menu-choice-indicator,
+.menu-extra-option.is-selected .menu-extra-indicator {
+  border-color: var(--primary);
+  background: var(--primary);
+  box-shadow: inset 0 0 0 3px var(--background);
+}
+.menu-choice-option input:focus-visible ~ .menu-choice-indicator,
+.menu-extra-option input:focus-visible ~ .menu-extra-indicator {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.menu-customization-price { margin-bottom: 1.5rem; color: var(--muted-foreground); font-size: .8rem; }
+.menu-customization-quantity { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.5rem 0; border-top: 1px solid var(--border); padding-top: 1.25rem; }
+.menu-quantity-label { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.menu-quantity-control { display: flex; align-items: center; gap: .8rem; }
+.menu-quantity-control strong { min-width: 1.25rem; text-align: center; font: 700 1rem var(--font-display); }
+.menu-quantity-control .inline-flex {
+  border-radius: 0;
+  border-color: var(--foreground);
+  background: transparent;
+  color: var(--foreground);
+}
+.menu-quantity-control .inline-flex:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.menu-extra-options {
+  display: grid;
+  gap: .35rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
+.menu-extra-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .7rem;
+  min-height: 2.75rem;
+  cursor: pointer;
+  border-block: 1px solid transparent;
+  padding: .55rem .65rem;
+  font-size: .82rem;
+  transition: background-color .2s, border-color .2s;
+}
+.menu-extra-option:hover,
+.menu-extra-option:focus-within,
+.menu-extra-option.is-selected {
+  border-color: color-mix(in oklab, var(--primary) 45%, transparent);
+  background: color-mix(in oklab, var(--secondary) 72%, transparent);
+}
+.menu-extra-option strong {
+  color: var(--primary);
+  font: 700 .78rem var(--font-display);
+  white-space: nowrap;
+}
 .menu-order-notes { display: grid; gap: .45rem; margin-top: 1.25rem; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
 .menu-order-notes textarea { resize: vertical; border: 1px solid var(--border); background: var(--background); color: var(--foreground); padding: .7rem; font: inherit; font-size: .85rem; text-transform: none; letter-spacing: normal; }
 .menu-order-disclaimer { color: var(--muted-foreground); font-size: .75rem; line-height: 1.45; }
@@ -302,6 +419,10 @@ a { color: inherit; text-decoration: none; }
 }
 @media (max-width: 767px) {
   .menu-category-nav-inner { padding-inline: 1.25rem; }
+  .menu-add-button { min-height: 2.5rem; padding-inline: .75rem; }
+  .menu-choice-option,
+  .menu-extra-option { min-height: 3rem; }
+  .menu-choice-options { gap: .25rem; }
   .menu-category { padding-block: 4rem; }
   .menu-item-heading { align-items: flex-start; }
   .menu-item h3 { max-width: 75%; }

@@ -504,6 +504,13 @@ const categoryLinks = [
 function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) {
   const customization = getCustomization(item);
   const descriptions = splitDescription(item.description);
+  const [added, setAdded] = useState(false);
+
+  const handleAdd = () => {
+    onAdd(item);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1400);
+  };
 
   return (
     <article className="menu-item">
@@ -529,11 +536,11 @@ function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) 
         type="button"
         variant="outline"
         size="sm"
-        className="menu-add-button"
-        onClick={() => onAdd(item)}
-        aria-label={`Add ${item.name} to order`}
+        className={`menu-add-button ${added ? "is-added" : ""}`}
+        onClick={handleAdd}
+        aria-label={added ? `${item.name} added to order` : `Add ${item.name} to order`}
       >
-        Add +
+        {added ? "ADDED ✓" : "ADD ↗"}
       </Button>
     </article>
   );
@@ -718,10 +725,11 @@ export function MenuContent() {
                   <label key={option} className={`menu-choice-option ${selectedChoices[group.id] === option ? "is-selected" : ""}`}>
                     <input
                       type="radio"
-                      name={group.id}
+                      name={`${customizing?.name ?? "item"}-${group.id}`}
                       checked={selectedChoices[group.id] === option}
                       onChange={() => setSelectedChoices((current) => ({ ...current, [group.id]: option }))}
                     />
+                    <span className="menu-choice-indicator" aria-hidden="true" />
                     <span>{option}</span>
                   </label>
                 ))}
@@ -741,6 +749,7 @@ export function MenuContent() {
                       checked ? current.filter((value) => value !== extra) : [...current, extra],
                     )}
                   />
+                  <span className="menu-extra-indicator" aria-hidden="true" />
                   <span>{details.label}</span>
                   <strong>+{formatPrice(details.price)}</strong>
                 </label>
@@ -748,9 +757,12 @@ export function MenuContent() {
             })}
           </div>
           <div className="menu-customization-quantity">
-            <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity">−</Button>
-            <strong>{customizingQuantity}</strong>
-            <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label="Increase quantity">+</Button>
+            <span className="menu-quantity-label">Quantity</span>
+            <div className="menu-quantity-control">
+              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity">−</Button>
+              <strong aria-live="polite">{customizingQuantity}</strong>
+              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label="Increase quantity">+</Button>
+            </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
