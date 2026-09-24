@@ -50,11 +50,6 @@ function formatPrice(value: number) {
   return `€${(value / 100).toFixed(2)}`;
 }
 
-function splitDescription(description?: string) {
-  if (!description) return [];
-  return description.split(" / ");
-}
-
 function extraDetails(extra: string) {
   const match = extra.match(/^(.*?)(?:\s+€(\d+(?:\.\d{2})?))$/);
   return {
@@ -134,12 +129,6 @@ function getCustomization(item?: Item): ItemCustomization {
   }
 
   return item?.extras ? { extras: item.extras } : {};
-}
-
-function getLineUnitPrice(line: OrderLine) {
-  return getChoicePrice(line.item, line.choices) +
-    line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0) +
-    0;
 }
 
 function getChoicePrice(item: Item, choices: Record<string, string>) {
