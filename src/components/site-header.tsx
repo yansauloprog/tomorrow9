@@ -46,11 +46,14 @@ export function SiteHeader() {
             ),
           )}
         </nav>
-        <Button asChild className="hidden bg-primary text-primary-foreground hover:bg-foreground md:inline-flex">
+        <Button
+          asChild
+          className="hidden !border-primary !bg-primary !text-foreground hover:!border-foreground hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:inline-flex"
+        >
           <a href={BOOKING_URL} target="_blank" rel="noreferrer">Book a table <ArrowUpRight size={15} /></a>
         </Button>
         <Button
-          className="size-11 bg-primary p-0 text-primary-foreground md:hidden"
+          className="size-11 !border-primary !bg-primary p-0 !text-primary-foreground hover:!border-foreground hover:!bg-foreground hover:!text-primary-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -69,7 +72,10 @@ export function SiteHeader() {
             ),
           )}
         </nav>
-        <Button asChild className="w-full bg-foreground text-background hover:bg-primary">
+        <Button
+          asChild
+          className="w-full !border-foreground !bg-foreground !text-background hover:!border-background hover:!bg-background hover:!text-foreground focus-visible:ring-2 focus-visible:ring-background focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+        >
           <a href={BOOKING_URL} target="_blank" rel="noreferrer">Book a table <ArrowUpRight size={16} /></a>
         </Button>
       </div>

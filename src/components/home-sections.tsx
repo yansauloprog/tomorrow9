@@ -75,7 +75,7 @@ export function MenuCallout() {
           <p>Breakfast, brunch, specialty coffee and everything in between.</p>
           <Button
             asChild
-            className="menu-button !border !border-foreground !bg-background !text-foreground transition-colors duration-200 hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+            className="menu-button !border !border-foreground !bg-background !text-foreground transition-colors duration-200 hover:!border-foreground hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
           >
             <Link to="/menu">Explore the menu <ArrowUpRight size={18} /></Link>
           </Button>
@@ -110,8 +110,18 @@ export function VisitSection() {
         <div className="visit-hours"><p>Open 08:00–17:00</p><a href="https://wa.me/351927703617" target="_blank" rel="noreferrer">+351 927 703 617</a></div>
       </div>
       <div className="visit-actions">
-        <Button asChild className="bg-primary text-primary-foreground hover:bg-foreground"><a href={directions} target="_blank" rel="noreferrer" aria-label="Open Tomorrow at 9 location in Google Maps">Get directions <ArrowUpRight size={16} /></a></Button>
-        <Button asChild className="border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background"><a href={BOOKING_URL} target="_blank" rel="noreferrer">Book a table</a></Button>
+        <Button
+          asChild
+          className="!border-primary !bg-primary !text-foreground hover:!border-foreground hover:!bg-foreground hover:!text-background focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          <a href={directions} target="_blank" rel="noreferrer" aria-label="Open Tomorrow at 9 location in Google Maps">Get directions <ArrowUpRight size={16} /></a>
+        </Button>
+        <Button
+          asChild
+          className="!border-foreground !bg-background !text-foreground hover:!border-primary hover:!bg-primary hover:!text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          <a href={BOOKING_URL} target="_blank" rel="noreferrer">Book a table</a>
+        </Button>
       </div>
     </section>
   );
