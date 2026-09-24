@@ -74,7 +74,7 @@ function getCustomization(item?: Item): ItemCustomization {
         options: ["Scrambled", "Fried", "Boiled"],
         required: true,
       }],
-      extras: item?.extras,
+      ...(item?.extras ? { extras: item.extras } : {}),
     };
   }
 
@@ -133,7 +133,7 @@ function getCustomization(item?: Item): ItemCustomization {
     };
   }
 
-  return { extras: item?.extras };
+  return item?.extras ? { extras: item.extras } : {};
 }
 
 function getLineUnitPrice(line: OrderLine) {
