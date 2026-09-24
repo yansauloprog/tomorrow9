@@ -34,8 +34,8 @@ export function SiteHeader() {
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <div className="site-header-inner">
-        <Link to="/" className="brand-signature" aria-label="Tomorrow at 9 home">
-          Tomorrow <span>at 9</span><sup>↗</sup>
+        <Link to="/" className="brand-signature" aria-label="Tomorrow at 8 home">
+          Tomorrow <span>at 8</span><sup>↗</sup>
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {links.map((link) =>
