@@ -16,7 +16,7 @@ export function HeroSection() {
         <h1>Tomorrow<br />starts at <span className="outlined-nine">9.</span></h1>
         <p className="hero-intro">Your everyday spot for good coffee, slow mornings and something delicious.</p>
         <div className="hero-actions">
-          <Button asChild className="border-foreground bg-foreground text-background hover:bg-foreground/90">
+          <Button asChild variant="ghost" className="border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background">
             <Link to="/menu">Explore the menu <ArrowUpRight size={16} /></Link>
           </Button>
           <Button asChild className="border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background">
