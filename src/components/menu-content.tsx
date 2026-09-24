@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { BOOKING_URL } from "@/components/site-header";
 
 type Item = {
@@ -10,6 +19,34 @@ type Item = {
   description?: string;
   extras?: string[];
 };
+
+type OrderLine = {
+  id: string;
+  item: Item;
+  extras: string[];
+  quantity: number;
+};
+
+function parsePrice(value?: string) {
+  return Number.parseFloat(value?.replace("€", "").replace(",", ".") ?? "0") || 0;
+}
+
+function formatPrice(value: number) {
+  return `€${value.toFixed(2)}`;
+}
+
+function splitDescription(description?: string) {
+  if (!description) return [];
+  return description.split(" / ");
+}
+
+function extraDetails(extra: string) {
+  const match = extra.match(/^(.*?)(?:\s+€(\d+(?:\.\d{2})?))$/);
+  return {
+    label: match?.[1] ?? extra,
+    price: match?.[2] ? Number.parseFloat(match[2]) : 0,
+  };
+}
 
 type Section = {
   id: string;
@@ -365,25 +402,102 @@ const categoryLinks = [
   "cocktails",
 ];
 
-function MenuItem({ item }: { item: Item }) {
+function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) {
+  const descriptions = splitDescription(item.description);
+
   return (
     <article className="menu-item">
       <div className="menu-item-heading">
         <h3>{item.name}</h3>
         {item.price && <span className="menu-item-price">{item.price}</span>}
       </div>
-      {item.description && <p className="menu-item-description">{item.description}</p>}
+      {descriptions.length > 0 && (
+        <div className="menu-item-description">
+          {descriptions.map((description, index) => (
+            <p key={description} className={index === 1 ? "menu-item-description-en" : undefined}>
+              {description}
+            </p>
+          ))}
+        </div>
+      )}
       {item.extras && (
         <ul className="menu-item-extras">
           {item.extras.map((extra) => <li key={extra}>{extra}</li>)}
         </ul>
       )}
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="menu-add-button"
+        onClick={() => onAdd(item)}
+      >
+        Add
+      </Button>
     </article>
   );
 }
 
 export function MenuContent() {
   const [active, setActive] = useState("special-menu");
+  const [order, setOrder] = useState<OrderLine[]>([]);
+  const [customizing, setCustomizing] = useState<Item | null>(null);
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
+  const [orderOpen, setOrderOpen] = useState(false);
+
+  const addToOrder = (item: Item, extras: string[] = []) => {
+    const id = `${item.name}-${extras.join("|")}`;
+    setOrder((current) => {
+      const existing = current.find((line) => line.id === id);
+      if (existing) {
+        return current.map((line) => line.id === id ? { ...line, quantity: line.quantity + 1 } : line);
+      }
+      return [...current, { id, item, extras, quantity: 1 }];
+    });
+  };
+
+  const handleAdd = (item: Item) => {
+    if (item.extras?.length) {
+      setCustomizing(item);
+      setSelectedExtras([]);
+      return;
+    }
+    addToOrder(item);
+  };
+
+  const updateQuantity = (id: string, change: number) => {
+    setOrder((current) =>
+      current
+        .map((line) => line.id === id ? { ...line, quantity: line.quantity + change } : line)
+        .filter((line) => line.quantity > 0),
+    );
+  };
+
+  const subtotal = order.reduce((total, line) => {
+    const extrasTotal = line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
+    return total + (parsePrice(line.item.price) + extrasTotal) * line.quantity;
+  }, 0);
+
+  const sendOrder = () => {
+    const lines = [
+      "Hello! I’d like to place an order at Tomorrow at 9.",
+      "",
+      "Order:",
+      ...order.flatMap((line) => {
+        const itemTotal = parsePrice(line.item.price) + line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
+        return [
+          `- ${line.quantity}x ${line.item.name} (${formatPrice(itemTotal)} each)`,
+          ...line.extras.map((extra) => `  + ${extraDetails(extra).label} (${formatPrice(extraDetails(extra).price)})`),
+          "",
+        ];
+      }),
+      `Subtotal: ${formatPrice(subtotal)}`,
+      "",
+      "Thank you!",
+    ];
+
+    window.open(`https://wa.me/351927703617?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener,noreferrer");
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -445,7 +559,7 @@ export function MenuContent() {
               <h2 className={section.tone === "outline" ? "is-outline" : ""}>{section.title}</h2>
             </div>
             <div className="menu-items">
-              {section.items.map((item) => <MenuItem key={item.name} item={item} />)}
+              {section.items.map((item) => <MenuItem key={item.name} item={item} onAdd={handleAdd} />)}
             </div>
             {section.id === "toasts" && (
               <p className="menu-allergen-note">
@@ -457,6 +571,113 @@ export function MenuContent() {
           </section>
         ))}
       </div>
+
+      <Button
+        type="button"
+        className="menu-order-trigger"
+        onClick={() => setOrderOpen(true)}
+        aria-label={`View order${order.length ? `, ${order.reduce((sum, line) => sum + line.quantity, 0)} items` : ""}`}
+      >
+        <ShoppingBag size={17} />
+        <span>Your order</span>
+        {order.length > 0 && <strong>{order.reduce((sum, line) => sum + line.quantity, 0)}</strong>}
+      </Button>
+
+      <Dialog open={customizing !== null} onOpenChange={(open) => !open && setCustomizing(null)}>
+        <DialogContent className="menu-order-dialog">
+          <DialogHeader>
+            <DialogTitle>Add {customizing?.name}</DialogTitle>
+            <DialogDescription>Select any extras you would like to add.</DialogDescription>
+          </DialogHeader>
+          <div className="menu-extra-options">
+            {customizing?.extras?.map((extra) => {
+              const details = extraDetails(extra);
+              const checked = selectedExtras.includes(extra);
+              return (
+                <label key={extra} className={`menu-extra-option ${checked ? "is-selected" : ""}`}>
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => setSelectedExtras((current) =>
+                      checked ? current.filter((value) => value !== extra) : [...current, extra],
+                    )}
+                  />
+                  <span>{details.label}</span>
+                  <strong>+{formatPrice(details.price)}</strong>
+                </label>
+              );
+            })}
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="ghost">Cancel</Button>
+            </DialogClose>
+            <Button
+              type="button"
+              onClick={() => {
+                if (customizing) addToOrder(customizing, selectedExtras);
+                setCustomizing(null);
+              }}
+            >
+              Add to order
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={orderOpen} onOpenChange={setOrderOpen}>
+        <DialogContent className="menu-order-dialog menu-summary-dialog">
+          <DialogHeader>
+            <DialogTitle>Your order</DialogTitle>
+            <DialogDescription>
+              {order.length ? "Review your order before sending it via WhatsApp." : "Add something from the menu to get started."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {order.length === 0 ? (
+            <p className="menu-empty-order">Your order is empty.</p>
+          ) : (
+            <div className="menu-order-lines">
+              {order.map((line) => {
+                const extrasTotal = line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
+                const lineTotal = (parsePrice(line.item.price) + extrasTotal) * line.quantity;
+                return (
+                  <div className="menu-order-line" key={line.id}>
+                    <div className="menu-order-line-copy">
+                      <strong>{line.item.name}</strong>
+                      {line.extras.length > 0 && (
+                        <ul>
+                          {line.extras.map((extra) => <li key={extra}>+ {extraDetails(extra).label}</li>)}
+                        </ul>
+                      )}
+                      <span>{formatPrice(lineTotal)}</span>
+                    </div>
+                    <div className="menu-order-line-controls">
+                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, -1)} aria-label={`Remove one ${line.item.name}`}>
+                        <Minus size={14} />
+                      </Button>
+                      <span>{line.quantity}</span>
+                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, 1)} aria-label={`Add one ${line.item.name}`}>
+                        <Plus size={14} />
+                      </Button>
+                      <Button type="button" variant="ghost" size="icon-xs" onClick={() => setOrder((current) => current.filter((entry) => entry.id !== line.id))} aria-label={`Remove ${line.item.name}`}>
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+              <div className="menu-order-subtotal">
+                <span>Subtotal</span>
+                <strong>{formatPrice(subtotal)}</strong>
+              </div>
+              <Button type="button" className="menu-whatsapp-button" onClick={sendOrder}>
+                Order on WhatsApp <ArrowUpRight size={16} />
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <section className="menu-closing">
         <p className="eyebrow">A slow morning, well spent</p>
