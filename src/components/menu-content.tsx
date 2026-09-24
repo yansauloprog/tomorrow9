@@ -58,7 +58,7 @@ function splitDescription(description?: string) {
 function extraDetails(extra: string) {
   const match = extra.match(/^(.*?)(?:\s+€(\d+(?:\.\d{2})?))$/);
   return {
-    label: match?.[1] ?? extra,
+    label: (match?.[1] ?? extra).replace(/^\+\s*/, "").trim(),
     price: match?.[2] ? Math.round(Number.parseFloat(match[2]) * 100) : 0,
   };
 }
