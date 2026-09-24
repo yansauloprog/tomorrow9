@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
-import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { bookingUrl } from "@/components/site-header";
 import { useLanguage, type Language } from "@/lib/language";
 import { localizeItemName, localizeItemDescription } from "@/lib/menu-l10n";
 
@@ -861,17 +859,7 @@ export function MenuContent() {
         </DialogContent>
       </Dialog>
 
-      <section className="menu-closing">
-        <p className="eyebrow">Tomorrow at 9 · {language === "en" ? "Lisbon" : "Lisboa"}</p>
-        <h2>{t("The menu")}</h2>
-        <p>{t("Breakfast, brunch, lunch and specialty coffee in Lisbon.")}</p>
-        <Button asChild className="menu-booking-button">
-          <a href={bookingUrl(language)} target="_blank" rel="noreferrer">
-            {t("Book a table")} <ArrowUpRight size={16} />
-          </a>
-        </Button>
-        <Link to="/" className="menu-back-home">{t("Back home ↗")}</Link>
-      </section>
+
     </main>
   );
 }
