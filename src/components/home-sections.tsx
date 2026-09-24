@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BOOKING_URL } from "@/components/site-header";
-import heroAsset from "@/assets/tomorrow-breakfast-coffee.png.asset.json";
-import toastAsset from "@/assets/tomorrow-salmon-toast.png.asset.json";
-import bowlAsset from "@/assets/tomorrow-breakfast-bowl.png.asset.json";
-import dessertAsset from "@/assets/tomorrow-dessert-caramel.png.asset.json";
-import pastryAsset from "@/assets/tomorrow-pastry.png.asset.json";
+import heroImage from "@/assets/uploads/2941.png";
+import toastImage from "@/assets/uploads/2943.png";
+import bowlImage from "@/assets/uploads/2941.png";
+import dessertImage from "@/assets/uploads/2944.png";
+import pastryImage from "@/assets/uploads/2942.png";
 
 export function HeroSection() {
   return (
@@ -26,7 +26,7 @@ export function HeroSection() {
         <div className="hero-details"><span>Rua Viriato 9B, Lisboa</span><span>08:00–17:00</span></div>
       </div>
       <div className="hero-image-wrap reveal-image">
-        <img src={heroAsset.url} width="768" height="1024" alt="Breakfast with eggs, hash browns, bacon, salad and coffee in natural light" fetchPriority="high" />
+        <img src={heroImage} width="768" height="1024" alt="Breakfast bowl with banana, fruit, coconut and nuts in natural light" fetchPriority="high" />
         <span className="image-stamp">More than<br />morning coffee</span>
       </div>
       <a className="scroll-cue" href="#story" aria-label="Scroll to our story"><ArrowDown size={18} /></a>
@@ -50,7 +50,7 @@ export function BrunchSection() {
   return (
     <section className="brunch-section">
       <div className="brunch-image-large photo-frame">
-        <img src={toastAsset.url} width="1024" height="768" alt="Salmon toast with tomato, cream cheese and fresh herbs" loading="lazy" />
+        <img src={toastImage} width="1024" height="768" alt="Salmon toast with tomato, cream cheese and fresh herbs" loading="lazy" />
       </div>
       <div className="brunch-copy">
         <p className="micro-label">02 / Brunch & coffee</p>
@@ -58,7 +58,7 @@ export function BrunchSection() {
         <p>Something savoury, something sweet, and always time for coffee.</p>
       </div>
       <figure className="brunch-image-small photo-frame">
-        <img src={bowlAsset.url} width="768" height="768" alt="Breakfast bowl with banana, fruit, coconut and nuts" loading="lazy" />
+        <img src={bowlImage} width="768" height="768" alt="Breakfast bowl with banana, fruit, coconut and nuts" loading="lazy" />
         <figcaption>Morning colour, served in a bowl.</figcaption>
       </figure>
     </section>
@@ -88,10 +88,10 @@ export function SweetSection() {
     <section className="sweet-section">
       <div className="sweet-title"><p className="micro-label">04 / Sweet moments</p><h2>Something sweet<br /><span>for the moment.</span></h2></div>
       <figure className="sweet-dessert photo-frame">
-        <img src={dessertAsset.url} width="768" height="768" alt="Slice of dessert with caramel sauce on a ceramic plate" loading="lazy" />
+        <img src={dessertImage} width="768" height="768" alt="Slice of dessert with caramel sauce on a ceramic plate" loading="lazy" />
         <figcaption>A sweet pause in the Lisbon sun.</figcaption>
       </figure>
-      <div className="sweet-pastry photo-frame"><img src={pastryAsset.url} width="768" height="768" alt="Round pastry on a handmade ceramic plate" loading="lazy" /></div>
+      <div className="sweet-pastry photo-frame"><img src={pastryImage} width="768" height="768" alt="Chocolate pastry on a handmade ceramic plate" loading="lazy" /></div>
     </section>
   );
 }
