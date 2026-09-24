@@ -19,7 +19,11 @@ export function HeroSection() {
           <Button asChild variant="ghost" className="hero-primary-button">
             <Link to="/menu">Explore the menu <ArrowUpRight size={16} /></Link>
           </Button>
-          <Button asChild className="border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background">
+          <Button
+            asChild
+            variant="outline"
+            className="border-foreground bg-background text-foreground transition-colors duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground active:border-primary active:bg-primary active:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
             <a href={BOOKING_URL} target="_blank" rel="noreferrer">Book a table</a>
           </Button>
         </div>
