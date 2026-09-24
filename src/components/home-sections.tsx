@@ -40,7 +40,7 @@ export function HeroSection() {
 
 export function StorySection() {
   return (
-    <section id="story" className="story-section">
+    <section id="our-story" className="story-section">
       <p className="micro-label">Our kind of morning</p>
       <div className="story-heading">
         <h2>Breakfast.<br /><span>Brunch.</span><br />Specialty coffee.</h2>
@@ -106,7 +106,7 @@ export function SweetSection() {
 export function VisitSection() {
   const directions = "https://www.google.com/maps/search/?api=1&query=Rua%20Viriato%209B%2C%201050-227%20Lisboa%2C%20Portugal";
   return (
-    <section id="visit" className="visit-section">
+    <section id="find-us" className="visit-section">
       <p className="micro-label">Find us in Lisbon</p>
       <div className="visit-grid">
         <h2>Find us<br /><span>in Lisbon.</span></h2>

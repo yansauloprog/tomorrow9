@@ -9,9 +9,9 @@ const BOOKING_URL =
 
 const links = [
   { label: "Home", href: "/#top" },
-  { label: "Our story", href: "/#story" },
+  { label: "Our story", href: "/#our-story" },
   { label: "The menu", href: "/menu" },
-  { label: "Find us", href: "/#visit" },
+  { label: "Find us", href: "/#find-us" },
 ];
 
 export function SiteHeader() {
@@ -31,6 +31,26 @@ export function SiteHeader() {
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, [open]);
+
+  useEffect(() => {
+    const scrollToHashTarget = () => {
+      const targetId = window.location.hash.slice(1);
+      if (!targetId) return;
+
+      window.requestAnimationFrame(() => {
+        document.getElementById(targetId)?.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "auto"
+            : "smooth",
+          block: "start",
+        });
+      });
+    };
+
+    scrollToHashTarget();
+    window.addEventListener("hashchange", scrollToHashTarget);
+    return () => window.removeEventListener("hashchange", scrollToHashTarget);
+  }, []);
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
