@@ -19,6 +19,8 @@ const translations: Record<string, [string, string]> = {
   "items": ["artigos", "artículos"],
   "item": ["artigo", "artículo"],
   "Lisbon · Breakfast · Brunch · Specialty coffee": ["Lisboa · Pequeno-almoço · Brunch · Café de especialidade", "Lisboa · Desayuno · Brunch · Café de especialidad"],
+  "Tomorrow": ["Amanhã", "Mañana"],
+  "starts at": ["começa às", "empieza a las"],
   "Tomorrow starts at": ["O amanhã começa às", "El mañana empieza a las"],
   "Your everyday spot for good coffee, slow mornings and something delicious.": ["O seu espaço em Lisboa para pequeno-almoço, brunch e café de especialidade.", "Tu sitio en Lisboa para desayunar, tomar brunch y disfrutar de un café de especialidad."],
   "Explore the menu": ["Explorar a ementa", "Ver la carta"],
