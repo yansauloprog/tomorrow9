@@ -37,7 +37,7 @@ export function HeroSection() {
         <div className="hero-details"><span>{t("Rua Viriato 9B, Lisboa")}</span><span>08:00–17:00</span></div>
       </div>
       <div className="hero-image-wrap reveal-image">
-        <img src={heroImage} width="1122" height="1402" alt="Breakfast plate with eggs, hash browns, bacon, salad and coffee" fetchPriority="high" />
+        <img src={heroImage} width="1122" height="1402" alt={t("Breakfast plate with eggs, hash browns, bacon, salad and coffee")} fetchPriority="high" />
         <span className="image-stamp">{t("More than morning coffee")}</span>
       </div>
       <Link className="scroll-cue" to="/" hash="our-story" aria-label={t("Scroll to our story")}><ArrowDown size={18} /></Link>
@@ -63,7 +63,7 @@ export function BrunchSection() {
   return (
     <section className="brunch-section">
       <div className="brunch-image-large photo-frame">
-        <img src={toastImage} width="1024" height="768" alt="Salmon toast with tomato, cream cheese and fresh herbs" loading="lazy" />
+        <img src={toastImage} width="1024" height="768" alt={t("Salmon toast with tomato, cream cheese and fresh herbs")} loading="lazy" />
       </div>
       <div className="brunch-copy">
         <p className="micro-label">{t("Breakfast & brunch")}</p>
@@ -71,8 +71,8 @@ export function BrunchSection() {
         <p>{t("From savoury breakfasts to something sweet, explore our brunch menu.")}</p>
       </div>
       <figure className="brunch-image-small photo-frame">
-        <img src={bowlImage} width="768" height="768" alt="Breakfast bowl with banana, fruit, coconut and nuts" loading="lazy" />
-        <figcaption>Morning colour, served in a bowl.</figcaption>
+        <img src={bowlImage} width="768" height="768" alt={t("Breakfast bowl with banana, fruit, coconut and nuts")} loading="lazy" />
+        <figcaption>{t("Morning colour, served in a bowl.")}</figcaption>
       </figure>
     </section>
   );
@@ -94,7 +94,7 @@ export function KitchenSection() {
             src={kitchenMeatImage}
             width="1152"
             height="1402"
-            alt="Bowl of sliced meat, potatoes, tomatoes and greens"
+            alt={t("Bowl of sliced meat, potatoes, tomatoes and greens")}
             loading="lazy"
           />
         </figure>
@@ -104,7 +104,7 @@ export function KitchenSection() {
             src={kitchenShakshukaImage}
             width="1254"
             height="1254"
-            alt="Shakshuka with bread and fresh herbs"
+            alt={t("Shakshuka with bread and fresh herbs")}
             loading="lazy"
           />
         </figure>
@@ -115,7 +115,7 @@ export function KitchenSection() {
               src={kitchenBowlImage}
               width="1254"
               height="1254"
-              alt="Breakfast bowl with strawberries, raspberries, granola and coconut"
+              alt={t("Breakfast bowl with strawberries, raspberries, granola and coconut")}
               loading="lazy"
             />
           </figure>
@@ -124,7 +124,7 @@ export function KitchenSection() {
               src={kitchenCrepeImage}
               width="1254"
               height="1402"
-              alt="Folded crepes with fruit and lime zest"
+              alt={t("Folded crepes with fruit and lime zest")}
               loading="lazy"
             />
           </figure>
