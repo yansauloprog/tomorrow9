@@ -11,7 +11,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { BOOKING_URL } from "@/components/site-header";
+import { bookingUrl } from "@/components/site-header";
+import { useLanguage, type Language } from "@/lib/language";
+import { localizeItemName, localizeItemDescription } from "@/lib/menu-l10n";
 
 type Item = {
   name: string;
@@ -72,7 +74,7 @@ function getCustomization(item?: Item): ItemCustomization {
         options: ["Scrambled", "Fried", "Boiled"],
         required: true,
       }],
-      extras: item.extras,
+      extras: item?.extras,
     };
   }
 
@@ -109,7 +111,7 @@ function getCustomization(item?: Item): ItemCustomization {
     };
   }
 
-  if (name === "wine") {
+  if (["sparkling wine", "white wine", "orange wine"].includes(name)) {
     return {
       choices: [{
         id: "format",
@@ -135,16 +137,25 @@ function getCustomization(item?: Item): ItemCustomization {
 }
 
 function getLineUnitPrice(line: OrderLine) {
-  return parsePrice(line.item.price) +
+  return getChoicePrice(line.item, line.choices) +
     line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0) +
-    (line.choices.format === "Glass" ? 0 : 0);
+    0;
 }
 
 function getChoicePrice(item: Item, choices: Record<string, string>) {
-  if (item.name === "Sparkling wine") return choices.format === "Glass" ? 700 : 3000;
-  if (item.name === "White wine") return choices.format === "Glass" ? 750 : 3200;
-  if (item.name === "Orange wine") return choices.format === "Glass" ? 650 : 2500;
+  if (item.name === "Sparkling wine") return choices.format === "Bottle" ? 3000 : 700;
+  if (item.name === "White wine") return choices.format === "Bottle" ? 3200 : 750;
+  if (item.name === "Orange wine") return choices.format === "Bottle" ? 2500 : 650;
   return parsePrice(item.price);
+}
+
+function localizeExtra(extra: string, language: Language, t: (english: string) => string) {
+  if (language === "en") return extra;
+  const wine = extra.match(/^(Glass|Bottle)( — €[\d.]+)$/);
+  if (wine) return t(wine[1]) + wine[2];
+  const priced = extra.match(/^(\+\s*)(.*?)(\s+€[\d.]+)$/);
+  if (priced) return priced[1] + t(priced[2]) + priced[3];
+  return t(extra);
 }
 
 type Section = {
@@ -316,8 +327,8 @@ const sections: Section[] = [
       { name: "Banoffee", price: "€6.00" },
       { name: "Carrot cake", price: "€6.00" },
       { name: "Basque pistachio cheesecake", price: "€6.00" },
-      { name: "Cookie de matcha com chocolate branco", price: "€3.00" },
-      { name: "Cookie de coco com chocolate ao leite", price: "€3.00" },
+      { name: "Matcha & white chocolate cookie", price: "€3.00" },
+      { name: "Coconut & milk chocolate cookie", price: "€3.00" },
     ],
   },
   {
@@ -325,9 +336,9 @@ const sections: Section[] = [
     label: "Pastry",
     title: "Pastry",
     items: [
-      { name: "Pão de queijo", price: "€1.00" },
+      { name: "Cheese bread", price: "€1.00" },
       {
-        name: "Croissant simples",
+        name: "Plain croissant",
         price: "€3.00",
         extras: ["+ Butter €2.00", "+ Miso caramel €2.00", "+ Jam €2.00"],
       },
@@ -339,7 +350,7 @@ const sections: Section[] = [
     title: "Extras",
     items: [
       {
-        name: "Pão",
+        name: "Bread",
         price: "€2.00",
         description: "Disponível apenas como complemento de um prato. / Available only as a side/add-on to a main dish.",
       },
@@ -502,8 +513,9 @@ const categoryLinks = [
 ];
 
 function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) {
+  const { language, t } = useLanguage();
   const customization = getCustomization(item);
-  const descriptions = splitDescription(item.description);
+  const description = localizeItemDescription(item.name, item.description, language);
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
@@ -515,21 +527,17 @@ function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) 
   return (
     <article className="menu-item">
       <div className="menu-item-heading">
-        <h3>{item.name}</h3>
+        <h3>{localizeItemName(item.name, language)}</h3>
         {item.price && <span className="menu-item-price">{item.price}</span>}
       </div>
-      {descriptions.length > 0 && (
+      {description && (
         <div className="menu-item-description">
-          {descriptions.map((description, index) => (
-            <p key={description} className={index === 1 ? "menu-item-description-en" : undefined}>
-              {description}
-            </p>
-          ))}
+          <p>{description}</p>
         </div>
       )}
       {item.extras && (
         <ul className="menu-item-extras">
-          {item.extras.map((extra) => <li key={extra}>{extra}</li>)}
+          {item.extras.map((extra) => <li key={extra}>{localizeExtra(extra, language, t)}</li>)}
         </ul>
       )}
       <Button
@@ -538,15 +546,16 @@ function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) 
         size="sm"
         className={`menu-add-button ${added ? "is-added" : ""}`}
         onClick={handleAdd}
-        aria-label={added ? `${item.name} added to order` : `Add ${item.name} to order`}
+        aria-label={added ? `${localizeItemName(item.name, language)}: ${t("Added to order")}` : `${t("Add to order")}: ${localizeItemName(item.name, language)}`}
       >
-        {added ? "ADDED ✓" : "ADD ↗"}
+        {t(added ? "ADDED ✓" : "ADD ↗")}
       </Button>
     </article>
   );
 }
 
 export function MenuContent() {
+  const { language, t } = useLanguage();
   const [active, setActive] = useState("special-menu");
   const [order, setOrder] = useState<OrderLine[]>([]);
   const [customizing, setCustomizing] = useState<Item | null>(null);
