@@ -152,9 +152,9 @@ function getChoicePrice(item: Item, choices: Record<string, string>) {
 function localizeExtra(extra: string, language: Language, t: (english: string) => string) {
   if (language === "en") return extra;
   const wine = extra.match(/^(Glass|Bottle)( — €[\d.]+)$/);
-  if (wine) return t(wine[1]) + wine[2];
+  if (wine) return t(wine[1] ?? "") + (wine[2] ?? "");
   const priced = extra.match(/^(\+\s*)(.*?)(\s+€[\d.]+)$/);
-  if (priced) return priced[1] + t(priced[2]) + priced[3];
+  if (priced) return (priced[1] ?? "") + t(priced[2] ?? "") + (priced[3] ?? "");
   return t(extra);
 }
 
@@ -875,7 +875,7 @@ export function MenuContent() {
       <section className="menu-closing">
         <p className="eyebrow">Tomorrow at 9 · {language === "en" ? "Lisbon" : "Lisboa"}</p>
         <h2>{t("The menu")}</h2>
-        <p>{t("Breakfast, brunch and lunch in Lisbon.")} {t("Specialty coffee.")}</p>
+        <p>{t("Breakfast, brunch, lunch and specialty coffee in Lisbon.")}</p>
         <Button asChild className="menu-booking-button">
           <a href={bookingUrl(language)} target="_blank" rel="noreferrer">
             {t("Book a table")} <ArrowUpRight size={16} />
