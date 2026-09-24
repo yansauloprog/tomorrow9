@@ -4,7 +4,10 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="footer-top">
-        <p className="footer-logo">Tomorrow at 9<span>↗</span></p>
+        <p className="footer-logo">
+          <span className="footer-logo-word">Tomorrow</span>{" "}
+          <span className="footer-logo-accent">at 9<span>↗</span></span>
+        </p>
       </div>
       <div className="footer-grid">
         <div>
