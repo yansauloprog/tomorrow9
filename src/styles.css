@@ -195,6 +195,78 @@ a { color: inherit; text-decoration: none; }
 .brunch-image-large { aspect-ratio: 4/3; }.brunch-image-small { aspect-ratio: 1; margin-top: 1rem; }
 .brunch-image-small figcaption,.sweet-dessert figcaption { margin-top: .75rem; font-size: .72rem; text-transform: uppercase; }
 .brunch-copy { padding: 2rem 0; }.brunch-copy h2 { margin: 1.5rem 0; }.brunch-copy p:last-child { max-width: 23rem; line-height: 1.6; }
+.kitchen-section {
+  padding: 7rem 1.25rem 8rem;
+  overflow: hidden;
+}
+
+.kitchen-heading {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.kitchen-heading h2 {
+  margin: 0;
+  font: 600 clamp(3.2rem, 10vw, 8.5rem)/.88 var(--font-display);
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+}
+
+.kitchen-heading h2 span {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--primary);
+}
+
+.kitchen-heading > p:last-child {
+  max-width: 24rem;
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.kitchen-gallery {
+  display: grid;
+  gap: 1rem;
+}
+
+.kitchen-image {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  background: var(--secondary);
+}
+
+.kitchen-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .7s cubic-bezier(.2,.7,.2,1);
+}
+
+.kitchen-image:hover img {
+  transform: scale(1.018);
+}
+
+.kitchen-image-featured {
+  aspect-ratio: 4 / 5;
+}
+
+.kitchen-image-shakshuka {
+  aspect-ratio: 1;
+}
+
+.kitchen-image-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.kitchen-image-pair .kitchen-image {
+  aspect-ratio: 1 / 1.12;
+}
+
 .menu-callout { position: relative; overflow: hidden; background: var(--primary); color: var(--primary-foreground); padding: 5rem 1.25rem 7rem; }
 .menu-callout-grid { display: grid; gap: 3rem; margin-top: 2rem; position: relative; z-index: 2; }
 .menu-callout h2 { font: 600 clamp(3.2rem, 10vw, 8.5rem)/.88 var(--font-display); letter-spacing: -.05em; }
@@ -225,6 +297,11 @@ a { color: inherit; text-decoration: none; }
   .hero-image-wrap { height: 65vh; min-height: 520px; }
   .brunch-section { gap: 1.25rem; }
   .brunch-copy { padding-block: 1rem; }
+  .kitchen-section { padding-block: 6rem 7rem; }
+  .kitchen-heading { gap: 1.25rem; margin-bottom: 2.5rem; }
+  .kitchen-gallery { gap: .85rem; }
+  .kitchen-image-featured { aspect-ratio: 4 / 5; }
+  .kitchen-image-pair { gap: .85rem; }
   .brunch-image-small { margin-top: 0; }
   .footer-logo {
     white-space: normal;

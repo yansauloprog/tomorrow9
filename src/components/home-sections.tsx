@@ -7,6 +7,10 @@ import toastImage from "@/assets/uploads/2943.png";
 import bowlImage from "@/assets/uploads/2941.png";
 import dessertImage from "@/assets/uploads/2944.png";
 import pastryImage from "@/assets/uploads/2942.png";
+import kitchenMeatImage from "@/assets/uploads/2953.png";
+import kitchenShakshukaImage from "@/assets/uploads/2954.png";
+import kitchenBowlImage from "@/assets/uploads/2955.png";
+import kitchenCrepeImage from "@/assets/uploads/2956.png";
 
 export function HeroSection() {
   return (
@@ -65,6 +69,61 @@ export function BrunchSection() {
         <img src={bowlImage} width="768" height="768" alt="Breakfast bowl with banana, fruit, coconut and nuts" loading="lazy" />
         <figcaption>Morning colour, served in a bowl.</figcaption>
       </figure>
+    </section>
+  );
+}
+
+export function KitchenSection() {
+  return (
+    <section className="kitchen-section">
+      <div className="kitchen-heading">
+        <p className="micro-label">From the kitchen</p>
+        <h2>From the<br /><span>kitchen.</span></h2>
+        <p>Breakfast, brunch and lunch in Lisbon.</p>
+      </div>
+
+      <div className="kitchen-gallery">
+        <figure className="kitchen-image kitchen-image-featured">
+          <img
+            src={kitchenMeatImage}
+            width="1152"
+            height="1402"
+            alt="Bowl of sliced meat, potatoes, tomatoes and greens"
+            loading="lazy"
+          />
+        </figure>
+
+        <figure className="kitchen-image kitchen-image-shakshuka">
+          <img
+            src={kitchenShakshukaImage}
+            width="1254"
+            height="1254"
+            alt="Shakshuka with bread and fresh herbs"
+            loading="lazy"
+          />
+        </figure>
+
+        <div className="kitchen-image-pair">
+          <figure className="kitchen-image">
+            <img
+              src={kitchenBowlImage}
+              width="1254"
+              height="1254"
+              alt="Breakfast bowl with strawberries, raspberries, granola and coconut"
+              loading="lazy"
+            />
+          </figure>
+          <figure className="kitchen-image">
+            <img
+              src={kitchenCrepeImage}
+              width="1254"
+              height="1402"
+              alt="Folded crepes with fruit and lime zest"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+      </div>
     </section>
   );
 }

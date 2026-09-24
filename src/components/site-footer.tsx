@@ -24,7 +24,7 @@ export function SiteFooter() {
           <Link to="/menu">The menu</Link>
           <a href="/#visit">Find us</a>
         </nav>
-        <p className="footer-copy">© 2026 Tomorrow at 9<br />Lisbon, Portugal</p>
+        <p className="footer-copy">© 2026 Tomorrow at 9<br />Lisbon, Portugal<br /><br />Food photography via Pexels.</p>
       </div>
     </footer>
   );

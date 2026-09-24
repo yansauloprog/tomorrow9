@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { BrunchSection, HeroSection, MenuCallout, StorySection, SweetSection, VisitSection } from "@/components/home-sections";
+import { BrunchSection, HeroSection, KitchenSection, MenuCallout, StorySection, SweetSection, VisitSection } from "@/components/home-sections";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,6 +27,7 @@ function Index() {
         <HeroSection />
         <StorySection />
         <BrunchSection />
+        <KitchenSection />
         <MenuCallout />
         <SweetSection />
         <VisitSection />
