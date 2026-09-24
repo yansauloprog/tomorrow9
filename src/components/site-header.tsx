@@ -64,7 +64,7 @@ export function SiteHeader() {
         </Link>
         <nav className="desktop-nav" aria-label={t("Primary navigation")}>
           {links.map((link) => (
-            <Link key={link.label} to={link.to} hash={"hash" in link ? link.hash : undefined} className="nav-link">
+            <Link key={link.label} to={link.to} {...("hash" in link ? { hash: link.hash } : {})} className="nav-link">
               {t(link.label)}
             </Link>
           ))}
@@ -101,7 +101,7 @@ export function SiteHeader() {
         </Link>
         <nav aria-label={t("Mobile navigation")}>
           {links.map((link) => (
-            <Link key={link.label} to={link.to} hash={"hash" in link ? link.hash : undefined} onClick={() => setOpen(false)}>
+            <Link key={link.label} to={link.to} {...("hash" in link ? { hash: link.hash } : {})} onClick={() => setOpen(false)}>
               {t(link.label)}
             </Link>
           ))}
