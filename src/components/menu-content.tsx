@@ -11,7 +11,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { BOOKING_URL } from "@/components/site-header";
+import { bookingUrl } from "@/components/site-header";
+import { useLanguage, type Language } from "@/lib/language";
+import { localizeItemName, localizeItemDescription } from "@/lib/menu-l10n";
 
 type Item = {
   name: string;
@@ -48,20 +50,15 @@ function formatPrice(value: number) {
   return `€${(value / 100).toFixed(2)}`;
 }
 
-function splitDescription(description?: string) {
-  if (!description) return [];
-  return description.split(" / ");
-}
-
 function extraDetails(extra: string) {
   const match = extra.match(/^(.*?)(?:\s+€(\d+(?:\.\d{2})?))$/);
   return {
-    label: match?.[1] ?? extra,
+    label: (match?.[1] ?? extra).replace(/^\+\s*/, "").trim(),
     price: match?.[2] ? Math.round(Number.parseFloat(match[2]) * 100) : 0,
   };
 }
 
-function getCustomization(item?: Item): ItemCustomization {
+function getCustomization(item?: Item | null): ItemCustomization {
   const name = item?.name?.toLowerCase() ?? "";
 
   if (name === "halloumi breakfast" || name === "big breakfast") {
@@ -72,7 +69,7 @@ function getCustomization(item?: Item): ItemCustomization {
         options: ["Scrambled", "Fried", "Boiled"],
         required: true,
       }],
-      extras: item.extras,
+      ...(item?.extras ? { extras: item.extras } : {}),
     };
   }
 
@@ -109,7 +106,7 @@ function getCustomization(item?: Item): ItemCustomization {
     };
   }
 
-  if (name === "wine") {
+  if (["sparkling wine", "white wine", "orange wine"].includes(name)) {
     return {
       choices: [{
         id: "format",
@@ -131,20 +128,23 @@ function getCustomization(item?: Item): ItemCustomization {
     };
   }
 
-  return { extras: item?.extras };
-}
-
-function getLineUnitPrice(line: OrderLine) {
-  return parsePrice(line.item.price) +
-    line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0) +
-    (line.choices.format === "Glass" ? 0 : 0);
+  return item?.extras ? { extras: item.extras } : {};
 }
 
 function getChoicePrice(item: Item, choices: Record<string, string>) {
-  if (item.name === "Sparkling wine") return choices.format === "Glass" ? 700 : 3000;
-  if (item.name === "White wine") return choices.format === "Glass" ? 750 : 3200;
-  if (item.name === "Orange wine") return choices.format === "Glass" ? 650 : 2500;
+  if (item.name === "Sparkling wine") return choices["format"] === "Bottle" ? 3000 : 700;
+  if (item.name === "White wine") return choices["format"] === "Bottle" ? 3200 : 750;
+  if (item.name === "Orange wine") return choices["format"] === "Bottle" ? 2500 : 650;
   return parsePrice(item.price);
+}
+
+function localizeExtra(extra: string, language: Language, t: (english: string) => string) {
+  if (language === "en") return extra;
+  const wine = extra.match(/^(Glass|Bottle)( — €[\d.]+)$/);
+  if (wine) return t(wine[1] ?? "") + (wine[2] ?? "");
+  const priced = extra.match(/^(\+\s*)(.*?)(\s+€[\d.]+)$/);
+  if (priced) return (priced[1] ?? "") + t(priced[2] ?? "") + (priced[3] ?? "");
+  return t(extra);
 }
 
 type Section = {
@@ -316,8 +316,8 @@ const sections: Section[] = [
       { name: "Banoffee", price: "€6.00" },
       { name: "Carrot cake", price: "€6.00" },
       { name: "Basque pistachio cheesecake", price: "€6.00" },
-      { name: "Cookie de matcha com chocolate branco", price: "€3.00" },
-      { name: "Cookie de coco com chocolate ao leite", price: "€3.00" },
+      { name: "Matcha & white chocolate cookie", price: "€3.00" },
+      { name: "Coconut & milk chocolate cookie", price: "€3.00" },
     ],
   },
   {
@@ -325,9 +325,9 @@ const sections: Section[] = [
     label: "Pastry",
     title: "Pastry",
     items: [
-      { name: "Pão de queijo", price: "€1.00" },
+      { name: "Cheese bread", price: "€1.00" },
       {
-        name: "Croissant simples",
+        name: "Plain croissant",
         price: "€3.00",
         extras: ["+ Butter €2.00", "+ Miso caramel €2.00", "+ Jam €2.00"],
       },
@@ -339,7 +339,7 @@ const sections: Section[] = [
     title: "Extras",
     items: [
       {
-        name: "Pão",
+        name: "Bread",
         price: "€2.00",
         description: "Disponível apenas como complemento de um prato. / Available only as a side/add-on to a main dish.",
       },
@@ -502,8 +502,9 @@ const categoryLinks = [
 ];
 
 function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) {
+  const { language, t } = useLanguage();
   const customization = getCustomization(item);
-  const descriptions = splitDescription(item.description);
+  const description = localizeItemDescription(item.name, item.description, language);
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
@@ -515,21 +516,17 @@ function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) 
   return (
     <article className="menu-item">
       <div className="menu-item-heading">
-        <h3>{item.name}</h3>
+        <h3>{localizeItemName(item.name, language)}</h3>
         {item.price && <span className="menu-item-price">{item.price}</span>}
       </div>
-      {descriptions.length > 0 && (
+      {description && (
         <div className="menu-item-description">
-          {descriptions.map((description, index) => (
-            <p key={description} className={index === 1 ? "menu-item-description-en" : undefined}>
-              {description}
-            </p>
-          ))}
+          <p>{description}</p>
         </div>
       )}
       {item.extras && (
         <ul className="menu-item-extras">
-          {item.extras.map((extra) => <li key={extra}>{extra}</li>)}
+          {item.extras.map((extra) => <li key={extra}>{localizeExtra(extra, language, t)}</li>)}
         </ul>
       )}
       <Button
@@ -538,15 +535,16 @@ function MenuItem({ item, onAdd }: { item: Item; onAdd: (item: Item) => void }) 
         size="sm"
         className={`menu-add-button ${added ? "is-added" : ""}`}
         onClick={handleAdd}
-        aria-label={added ? `${item.name} added to order` : `Add ${item.name} to order`}
+        aria-label={added ? `${localizeItemName(item.name, language)}: ${t("Added to order")}` : `${t("Add to order")}: ${localizeItemName(item.name, language)}`}
       >
-        {added ? "ADDED ✓" : "ADD ↗"}
+        {t(added ? "ADDED ✓" : "ADD ↗")}
       </Button>
     </article>
   );
 }
 
 export function MenuContent() {
+  const { language, t } = useLanguage();
   const [active, setActive] = useState("special-menu");
   const [order, setOrder] = useState<OrderLine[]>([]);
   const [customizing, setCustomizing] = useState<Item | null>(null);
@@ -555,6 +553,18 @@ export function MenuContent() {
   const [customizingQuantity, setCustomizingQuantity] = useState(1);
   const [orderOpen, setOrderOpen] = useState(false);
   const [orderNotes, setOrderNotes] = useState("");
+
+  useEffect(() => {
+    const openOrder = () => setOrderOpen(true);
+    window.addEventListener("tomorrow9:open-order", openOrder);
+    return () => window.removeEventListener("tomorrow9:open-order", openOrder);
+  }, []);
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("tomorrow9:order-state", {
+      detail: { count: order.reduce((sum, line) => sum + line.quantity, 0) },
+    }));
+  }, [order]);
 
   const addToOrder = (
     item: Item,
@@ -599,27 +609,27 @@ export function MenuContent() {
 
   const sendOrder = () => {
     const lines = [
-      "Hello! I’d like to place an order at Tomorrow at 9.",
+      t("Hello! I’d like to place an order at Tomorrow at 9."),
       "",
-      "Order:",
+      t("Order:"),
       ...order.flatMap((line) => {
         const itemTotal = getChoicePrice(line.item, line.choices) +
           line.extras.reduce((sum, extra) => sum + extraDetails(extra).price, 0);
         return [
-          `${line.quantity}x ${line.item.name}`,
-          ...Object.values(line.choices).map((choice) => `  + ${choice}`),
-          ...line.extras.map((extra) => `  + ${extraDetails(extra).label} (${formatPrice(extraDetails(extra).price)})`),
-          `Unit price: ${formatPrice(itemTotal)}`,
-          `Line total: ${formatPrice(itemTotal * line.quantity)}`,
+          `${line.quantity}x ${localizeItemName(line.item.name, language)}`,
+          ...Object.values(line.choices).map((choice) => `  + ${t(choice)}`),
+          ...line.extras.map((extra) => `  + ${localizeExtra(extraDetails(extra).label, language, t)} (${formatPrice(extraDetails(extra).price)})`),
+          `${t("Unit price:")} ${formatPrice(itemTotal)}`,
+          `${t("Line total:")} ${formatPrice(itemTotal * line.quantity)}`,
           "",
         ];
       }),
-      ...(orderNotes.trim() ? ["Order notes:", orderNotes.trim(), ""] : []),
-      `TOTAL: ${formatPrice(subtotal)}`,
+      ...(orderNotes.trim() ? [t("Order notes:"), orderNotes.trim(), ""] : []),
+      `${t("TOTAL:")} ${formatPrice(subtotal)}`,
       "",
-      "Please confirm availability and the order details.",
+      t("Please confirm availability and the order details."),
       "",
-      "Thank you!",
+      t("Thank you!"),
     ];
 
     window.open(`https://wa.me/351927703617?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener,noreferrer");
@@ -640,16 +650,16 @@ export function MenuContent() {
   return (
     <main className="editorial-menu">
       <section className="menu-hero">
-        <p className="eyebrow">The menu · Lisbon</p>
-        <h1>The<br /><span>menu.</span></h1>
+        <p className="eyebrow">{t("The menu · Lisbon")}</p>
+        <h1>{t("The menu")}</h1>
         <div className="menu-hero-meta">
-          <p>Breakfast · Brunch · Lunch · Specialty coffee</p>
+          <p>{t("Breakfast · Brunch · Lunch · Specialty coffee")}</p>
           <p>08:00–17:00</p>
         </div>
-        <p className="menu-allergens">Please ask our team about allergens.</p>
+        <p className="menu-allergens">{t("Please ask our team about allergens.")}</p>
       </section>
 
-      <nav className="menu-category-nav" aria-label="Menu categories">
+      <nav className="menu-category-nav" aria-label={t("Menu categories")}>
         <div className="menu-category-nav-inner">
           {categoryLinks.map((id) => {
             const section = sections.find((entry) => entry.id === id);
@@ -661,7 +671,7 @@ export function MenuContent() {
                 className={active === id ? "is-active" : ""}
                 aria-current={active === id ? "location" : undefined}
               >
-                {section.label}
+                {t(section.label)}
               </a>
             );
           })}
@@ -677,20 +687,19 @@ export function MenuContent() {
           >
             {section.tone === "coffee" && index === 7 && (
               <div className="coffee-divider" aria-hidden="true">
-                <strong>Specialty<br />coffee.</strong>
+                <strong>{t("Specialty coffee.")}</strong>
               </div>
             )}
             <div className="menu-category-header">
-              <h2 className={section.tone === "outline" ? "is-outline" : ""}>{section.title}</h2>
+              <h2 className={section.tone === "outline" ? "is-outline" : ""}>{t(section.title)}</h2>
             </div>
             <div className="menu-items">
               {section.items.map((item) => <MenuItem key={item.name} item={item} onAdd={handleAdd} />)}
             </div>
             {section.id === "toasts" && (
               <p className="menu-allergen-note">
-                <strong>Allergens</strong><br />
-                Por favor solicite informação sobre alergénios, dos produtos não pré-embalados, junto dos funcionários.<br />
-                Please ask a staff member for information on food allergens.
+                <strong>{t("Allergens")}</strong><br />
+                {t("Please ask a staff member for information on food allergens.")}
               </p>
             )}
           </section>
@@ -701,25 +710,25 @@ export function MenuContent() {
         type="button"
         className="menu-order-trigger"
         onClick={() => setOrderOpen(true)}
-        aria-label={`View order${order.length ? `, ${order.reduce((sum, line) => sum + line.quantity, 0)} items` : ""}`}
+        aria-label={`${t("View order")}${order.length ? `, ${order.reduce((sum, line) => sum + line.quantity, 0)} ${t("items")}` : ""}`}
       >
         <ShoppingBag size={17} />
-        <span>Your order</span>
+        <span>{t("Your order")}</span>
         {order.length > 0 && <strong>{order.reduce((sum, line) => sum + line.quantity, 0)}</strong>}
       </Button>
 
       <Dialog open={customizing !== null} onOpenChange={(open) => !open && setCustomizing(null)}>
         <DialogContent className="menu-order-dialog">
           <DialogHeader>
-            <DialogTitle>Add {customizing?.name}</DialogTitle>
-            <DialogDescription>Select the options for this item, then add it to your order.</DialogDescription>
+            <DialogTitle>{t("Add")} {customizing && localizeItemName(customizing.name, language)}</DialogTitle>
+            <DialogDescription>{t("Select the options for this item, then add it to your order.")}</DialogDescription>
           </DialogHeader>
           <div className="menu-customization-price">
-            Base price: {formatPrice(customizing ? getChoicePrice(customizing, selectedChoices) : 0)}
+            {t("Base price:")} {formatPrice(customizing ? getChoicePrice(customizing, selectedChoices) : 0)}
           </div>
           {getCustomization(customizing).choices?.map((group) => (
             <fieldset className="menu-choice-group" key={group.id}>
-              <legend>{group.label}</legend>
+              <legend>{t(group.label)}</legend>
               <div className="menu-choice-options">
                 {group.options.map((option) => (
                   <label key={option} className={`menu-choice-option ${selectedChoices[group.id] === option ? "is-selected" : ""}`}>
@@ -730,7 +739,7 @@ export function MenuContent() {
                       onChange={() => setSelectedChoices((current) => ({ ...current, [group.id]: option }))}
                     />
                     <span className="menu-choice-indicator" aria-hidden="true" />
-                    <span>{option}</span>
+                    <span>{t(option)}</span>
                   </label>
                 ))}
               </div>
@@ -750,23 +759,23 @@ export function MenuContent() {
                     )}
                   />
                   <span className="menu-extra-indicator" aria-hidden="true" />
-                  <span>{details.label}</span>
+                  <span>{localizeExtra(details.label, language, t)}</span>
                   <strong>+{formatPrice(details.price)}</strong>
                 </label>
               );
             })}
           </div>
           <div className="menu-customization-quantity">
-            <span className="menu-quantity-label">Quantity</span>
+            <span className="menu-quantity-label">{t("Quantity")}</span>
             <div className="menu-quantity-control">
-              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity">−</Button>
+              <Button type="button" variant="outline" size="icon" onClick={() => setCustomizingQuantity((value) => Math.max(1, value - 1))} aria-label={t("Decrease quantity")}>−</Button>
               <strong aria-live="polite">{customizingQuantity}</strong>
-              <Button type="button" variant="outline" size="icon-sm" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label="Increase quantity">+</Button>
+              <Button type="button" variant="outline" size="icon" onClick={() => setCustomizingQuantity((value) => value + 1)} aria-label={t("Increase quantity")}>+</Button>
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="ghost">Cancel</Button>
+              <Button type="button" variant="ghost">{t("Cancel")}</Button>
             </DialogClose>
             <Button
               type="button"
@@ -776,7 +785,7 @@ export function MenuContent() {
                 setCustomizing(null);
               }}
             >
-              Add to order
+              {t("Add to order")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -785,16 +794,16 @@ export function MenuContent() {
       <Dialog open={orderOpen} onOpenChange={setOrderOpen}>
         <DialogContent className="menu-order-dialog menu-summary-dialog">
           <DialogHeader>
-            <DialogTitle>Your order</DialogTitle>
+            <DialogTitle>{t("Your order")}</DialogTitle>
             <DialogDescription>
-              {order.length ? "Review your order before sending it via WhatsApp." : "Add something from the menu to get started."}
+              {t(order.length ? "Review your order before sending it via WhatsApp." : "Add something from the menu to get started.")}
             </DialogDescription>
           </DialogHeader>
 
           {order.length === 0 ? (
             <div className="menu-empty-order">
-              <p>Your order is empty.</p>
-              <p>Add something from the menu to get started.</p>
+              <p>{t("Your order is empty.")}</p>
+              <p>{t("Add something from the menu to get started.")}</p>
             </div>
           ) : (
             <div className="menu-order-lines">
@@ -806,24 +815,24 @@ export function MenuContent() {
                 return (
                   <div className="menu-order-line" key={line.id}>
                     <div className="menu-order-line-copy">
-                      <strong>{line.item.name}</strong>
+                      <strong>{localizeItemName(line.item.name, language)}</strong>
                       {(line.extras.length > 0 || Object.keys(line.choices).length > 0) && (
                         <ul>
-                          {Object.values(line.choices).map((choice) => <li key={choice}>+ {choice}</li>)}
-                          {line.extras.map((extra) => <li key={extra}>+ {extraDetails(extra).label}</li>)}
+                          {Object.values(line.choices).map((choice) => <li key={choice}>+ {t(choice)}</li>)}
+                          {line.extras.map((extra) => <li key={extra}>+ {localizeExtra(extraDetails(extra).label, language, t)}</li>)}
                         </ul>
                       )}
                       <span>{formatPrice(lineTotal)}</span>
                     </div>
                     <div className="menu-order-line-controls">
-                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, -1)} aria-label={`Remove one ${line.item.name}`}>
+                      <Button type="button" variant="outline" size="icon" onClick={() => updateQuantity(line.id, -1)} aria-label={`${t("Decrease quantity")}: ${localizeItemName(line.item.name, language)}`}>
                         <Minus size={14} />
                       </Button>
                       <span>{line.quantity}</span>
-                      <Button type="button" variant="outline" size="icon-xs" onClick={() => updateQuantity(line.id, 1)} aria-label={`Add one ${line.item.name}`}>
+                      <Button type="button" variant="outline" size="icon" onClick={() => updateQuantity(line.id, 1)} aria-label={`${t("Increase quantity")}: ${localizeItemName(line.item.name, language)}`}>
                         <Plus size={14} />
                       </Button>
-                      <Button type="button" variant="ghost" size="icon-xs" onClick={() => setOrder((current) => current.filter((entry) => entry.id !== line.id))} aria-label={`Remove ${line.item.name}`}>
+                      <Button type="button" variant="ghost" size="icon" onClick={() => setOrder((current) => current.filter((entry) => entry.id !== line.id))} aria-label={`${t("Remove")}: ${localizeItemName(line.item.name, language)}`}>
                         <Trash2 size={14} />
                       </Button>
                     </div>
@@ -831,21 +840,21 @@ export function MenuContent() {
                 );
               })}
               <div className="menu-order-subtotal">
-                <span>Subtotal</span>
+                <span>{t("Subtotal")}</span>
                 <strong>{formatPrice(subtotal)}</strong>
               </div>
               <label className="menu-order-notes">
-                <span>Order notes</span>
+                <span>{t("Order notes")}</span>
                 <textarea
                   value={orderNotes}
                   onChange={(event) => setOrderNotes(event.target.value)}
-                  placeholder="Anything you'd like us to know?"
+                  placeholder={t("Anything you'd like us to know?")}
                   rows={3}
                 />
               </label>
-              <p className="menu-order-disclaimer">Your order will be confirmed by the café via WhatsApp.</p>
+              <p className="menu-order-disclaimer">{t("Your order will be confirmed by the café via WhatsApp.")}</p>
               <Button type="button" className="menu-whatsapp-button" onClick={sendOrder}>
-                Send order via WhatsApp <ArrowUpRight size={16} />
+                {t("Send order via WhatsApp")} <ArrowUpRight size={16} />
               </Button>
             </div>
           )}
@@ -853,15 +862,15 @@ export function MenuContent() {
       </Dialog>
 
       <section className="menu-closing">
-        <p className="eyebrow">Tomorrow at 9 · Lisbon</p>
-        <h2>The<br /><span>menu.</span></h2>
-        <p>Breakfast, brunch, lunch and specialty coffee in Lisbon.</p>
+        <p className="eyebrow">Tomorrow at 9 · {language === "en" ? "Lisbon" : "Lisboa"}</p>
+        <h2>{t("The menu")}</h2>
+        <p>{t("Breakfast, brunch, lunch and specialty coffee in Lisbon.")}</p>
         <Button asChild className="menu-booking-button">
-          <a href={BOOKING_URL} target="_blank" rel="noreferrer">
-            Book a table <ArrowUpRight size={16} />
+          <a href={bookingUrl(language)} target="_blank" rel="noreferrer">
+            {t("Book a table")} <ArrowUpRight size={16} />
           </a>
         </Button>
-        <Link to="/" className="menu-back-home">Back home ↗</Link>
+        <Link to="/" className="menu-back-home">{t("Back home ↗")}</Link>
       </section>
     </main>
   );
