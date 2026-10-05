@@ -16,14 +16,14 @@ const people = [
     description: 'incrivelmente, a mãe dela também!',
     kind: 'audio',
     src: '',
-    finalMessage: 'no fim, a autorização saiu e o áudio também kkkkk'
+    finalMessage: 'sim, por incrível que pareça, ela veio também.'
   },
   {
     name: 'Beatriz',
     description: 'sim, a mãe dela deixou ela mandar!',
-    kind: 'audio',
-    src: '',
-    finalMessage: 'sim, a autorização materna foi real. e valeu a pena kkkkk'
+    kind: 'text',
+    text: 'Você é linda por fora, mas é por dentro que você brilha de verdade.\nTem uma luz que vibra e uma risada que faz parte do seu jeitinho que salva qualquer um.\nEu tenho tanto orgulho de conhecer a mulher que você é.\nMas hoje eu quero mostrar que vc é especial como pessoa, e amiga verdadeira.\nCom uma amizade de verdade não é só foto bonita.\nÉ ter com quem contar, e fazer presente. Mesmo não sendo sempre 100% por que nada e perfeito, porém amar, cuida,respeitar e fundamental \nA gente já brigou por besteira, já chorou junto, já riu até doer a barriga.\nVocê me conhece sem filtro nenhum e continua aqui,como eu também estou quando precisar.\nVocê é a amiga que fica. Que escuta, que puxa a orelha e que vibra por mim.\n18 anos é só o começo da uma fase nova.\nQue vai mudar muita coisa, mas eu quero estar e fazer parte nesses novos ciclos.\nFeliz vida,você merece o mundo. Eu amo você!🤍',
+    finalMessage: 'Nem eu acreditei que a mãe dela deixou KKKKKKKKKK'
   },
   {
     name: 'Malu',
@@ -37,7 +37,7 @@ const people = [
     description: 'depois de muita espera, ele mandou kkkk',
     kind: 'audio',
     src: '',
-    finalMessage: 'esse áudio quase virou lenda, mas ele entregou kkkkk'
+    finalMessage: 'por ele você não esperava, né?'
   },
   {
     name: 'Ramayana',
