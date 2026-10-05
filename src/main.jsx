@@ -9,48 +9,56 @@ const people = [
     description: 'grande amiga e com certeza cúmplice de muitas histórias',
     kind: 'video',
     src: '',
-    finalMessage: ''
+    finalMessage: 'se existe alguma história sua que eu ainda não sei, é bem capaz dela saber.'
   },
   {
     name: 'Cecílya',
     description: 'incrivelmente, a mãe dela também!',
-    kind: 'video',
+    kind: 'audio',
     src: '',
-    finalMessage: ''
+    finalMessage: 'no fim, a autorização saiu e o áudio também kkkkk'
   },
   {
     name: 'Beatriz',
     description: 'sim, a mãe dela deixou ela mandar!',
-    kind: 'video',
+    kind: 'audio',
     src: '',
-    finalMessage: ''
+    finalMessage: 'sim, a autorização materna foi real. e valeu a pena kkkkk'
+  },
+  {
+    name: 'Malu',
+    description: 'nem deu 2 anos direito e já virou uma das mais próximas',
+    kind: 'audio',
+    src: '',
+    finalMessage: 'nem dois anos direito e já parece amizade de uma vida inteira.'
   },
   {
     name: 'Lucas',
     description: 'depois de muita espera, ele mandou kkkk',
-    kind: 'video',
+    kind: 'audio',
     src: '',
-    finalMessage: ''
+    finalMessage: 'esse áudio quase virou lenda, mas ele entregou kkkkk'
   },
   {
     name: 'Ramayana',
     description: 'participação mais do que obrigatória pô, mãe é mãe, né',
     kind: 'video',
     src: '',
-    finalMessage: ''
+    finalMessage: 'essa aqui não tinha como ser só mais um recado. é mãe.'
   },
   {
     name: 'Marquinhos',
     description: 'ele também não podia ficar de fora',
-    kind: 'video',
+    kind: 'audio',
     src: '',
-    finalMessage: ''
+    finalMessage: 'e claro que o pai também tinha coisa pra dizer.'
   },
   {
     name: 'Tio Paniagua & Tia Fátima',
     description: 'algumas pessoas simplesmente viram família',
     kind: 'text',
-    text: 'Minha querida Thayná, nesta data, a emoção tomava conta de todos e, naquele momento, você chegava para dar alegria e emoção a todos que te esperavam.\n\nSua infância e suas peripécias ficaram gravadas em nossa mente como aquela menininha tão amável, sorridente e alegre.\n\nVocê foi crescendo, debutou, e nós sempre vibrando pela sua vitória e seu sucesso.\n\nE, contudo, o tempo está passando.\n\nO tempo não para e não espera. Siga em frente, galgue tudo que você tem em sua mente, que a família estará sempre junto de você para te ajudar.\n\nAgora, hoje, neste dia, ele é todo seu.\n\nViva na certeza da sua felicidade.\n\nVocê, nos seus dezoito anos, tem o controle de sua vida e dela você será capaz de dominar o seu sucesso.\n\nAssim como nós estamos felizes, você também está muito irradiante de felicidade.\n\nNossos parabéns! Seja feliz. Deus te abençoe sempre.\n\nFelicidades em suas 18 primaveras.'
+    text: 'Minha querida Thayná, nesta data, a emoção tomava conta de todos e, naquele momento, você chegava para dar alegria e emoção a todos que te esperavam.\n\nSua infância e suas peripécias ficaram gravadas em nossa mente como aquela menininha tão amável, sorridente e alegre.\n\nVocê foi crescendo, debutou, e nós sempre vibrando pela sua vitória e seu sucesso.\n\nE, contudo, o tempo está passando.\n\nO tempo não para e não espera. Siga em frente, galgue tudo que você tem em sua mente, que a família estará sempre junto de você para te ajudar.\n\nAgora, hoje, neste dia, ele é todo seu.\n\nViva na certeza da sua felicidade.\n\nVocê, nos seus dezoito anos, tem o controle de sua vida e dela você será capaz de dominar o seu sucesso.\n\nAssim como nós estamos felizes, você também está muito irradiante de felicidade.\n\nNossos parabéns! Seja feliz. Deus te abençoe sempre.\n\nFelicidades em suas 18 primaveras.',
+    finalMessage: 'esse aqui veio de quem não precisou de sobrenome pra virar família.'
   }
 ]
 
@@ -387,6 +395,37 @@ function VideoMedia({ person, onDone }) {
   )
 }
 
+function AudioMedia({ person, onDone }) {
+  useEffect(() => {
+    if (person.src) return
+    const timer = setTimeout(onDone, 850)
+    return () => clearTimeout(timer)
+  }, [person.src, onDone])
+
+  if (!person.src) {
+    return (
+      <motion.div
+        className="pendingAudio"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.45 }}
+      >
+        <span>áudio de {person.name}</span>
+      </motion.div>
+    )
+  }
+
+  return (
+    <audio
+      className="audioMedia"
+      src={person.src}
+      controls
+      preload="metadata"
+      onEnded={onDone}
+    />
+  )
+}
+
 function CompletionBlock({ message, onNext, buttonLabel }) {
   return (
     <motion.div
@@ -482,6 +521,11 @@ function PersonScreen({ person, index = 0, next, buttonLabel, final = false }) {
               <article className="textMessage">
                 <p>{person.text}</p>
               </article>
+            ) : person.kind === 'audio' ? (
+              <AudioMedia
+                person={person}
+                onDone={() => setMediaDone(true)}
+              />
             ) : (
               <VideoMedia
                 person={person}
@@ -518,8 +562,8 @@ function App() {
   }
 
   const nextPerson = () => {
-    if (personIndex === 3) {
-      setPersonIndex(4)
+    if (personIndex === 4) {
+      setPersonIndex(5)
       setPhase('family')
       return
     }
