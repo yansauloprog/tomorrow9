@@ -7,32 +7,44 @@ const people = [
   {
     name: 'Yasmin',
     description: 'grande amiga e com certeza cúmplice de muitas histórias',
-    kind: 'pending'
+    kind: 'video',
+    src: '',
+    finalMessage: ''
   },
   {
     name: 'Cecílya',
     description: 'incrivelmente, a mãe dela também!',
-    kind: 'pending'
+    kind: 'video',
+    src: '',
+    finalMessage: ''
   },
   {
     name: 'Beatriz',
     description: 'sim, a mãe dela deixou ela mandar!',
-    kind: 'pending'
+    kind: 'video',
+    src: '',
+    finalMessage: ''
   },
   {
     name: 'Lucas',
     description: 'depois de muita espera, ele mandou kkkk',
-    kind: 'pending'
+    kind: 'video',
+    src: '',
+    finalMessage: ''
   },
   {
     name: 'Ramayana',
     description: 'participação mais do que obrigatória pô, mãe é mãe, né',
-    kind: 'pending'
+    kind: 'video',
+    src: '',
+    finalMessage: ''
   },
   {
     name: 'Marquinhos',
     description: 'ele também não podia ficar de fora',
-    kind: 'pending'
+    kind: 'video',
+    src: '',
+    finalMessage: ''
   },
   {
     name: 'Tio Paniagua & Tia Fátima',
@@ -41,6 +53,14 @@ const people = [
     text: 'Minha querida Thayná, nesta data, a emoção tomava conta de todos e, naquele momento, você chegava para dar alegria e emoção a todos que te esperavam.\n\nSua infância e suas peripécias ficaram gravadas em nossa mente como aquela menininha tão amável, sorridente e alegre.\n\nVocê foi crescendo, debutou, e nós sempre vibrando pela sua vitória e seu sucesso.\n\nE, contudo, o tempo está passando.\n\nO tempo não para e não espera. Siga em frente, galgue tudo que você tem em sua mente, que a família estará sempre junto de você para te ajudar.\n\nAgora, hoje, neste dia, ele é todo seu.\n\nViva na certeza da sua felicidade.\n\nVocê, nos seus dezoito anos, tem o controle de sua vida e dela você será capaz de dominar o seu sucesso.\n\nAssim como nós estamos felizes, você também está muito irradiante de felicidade.\n\nNossos parabéns! Seja feliz. Deus te abençoe sempre.\n\nFelicidades em suas 18 primaveras.'
   }
 ]
+
+const yan = {
+  name: 'Yan',
+  description: 'agora sim, faltava eu.',
+  kind: 'video',
+  src: '',
+  finalMessage: ''
+}
 
 const VerticalCutReveal = forwardRef(function VerticalCutReveal(
   {
@@ -335,15 +355,48 @@ function CenteredTextScreen({ lines, button, onNext, dark = false }) {
   )
 }
 
-function PendingMedia({ person }) {
+function VideoMedia({ person, onDone }) {
+  useEffect(() => {
+    if (person.src) return
+    const timer = setTimeout(onDone, 850)
+    return () => clearTimeout(timer)
+  }, [person.src, onDone])
+
+  if (!person.src) {
+    return (
+      <motion.div
+        className="pendingMedia"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.45 }}
+      >
+        <span>espaço reservado para o vídeo de {person.name}</span>
+      </motion.div>
+    )
+  }
+
+  return (
+    <video
+      className="videoMedia"
+      src={person.src}
+      controls
+      playsInline
+      preload="metadata"
+      onEnded={onDone}
+    />
+  )
+}
+
+function CompletionBlock({ message, onNext, buttonLabel }) {
   return (
     <motion.div
-      className="pendingMedia"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.45 }}
+      className="completionBlock"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
     >
-      <span>mídia de {person.name}</span>
+      {message && <p className="finalMessage">{message}</p>}
+      <Button onClick={onNext}>{buttonLabel}</Button>
     </motion.div>
   )
 }
@@ -393,8 +446,13 @@ function PersonHeader({ person, onReady }) {
   )
 }
 
-function PersonScreen({ person, index, next }) {
+function PersonScreen({ person, index = 0, next, buttonLabel, final = false }) {
   const [headerReady, setHeaderReady] = useState(false)
+  const [mediaDone, setMediaDone] = useState(person.kind === 'text')
+
+  const nextLabel =
+    buttonLabel ||
+    (final ? 'terminar' : index === people.length - 1 ? 'continuar' : 'próximo')
 
   return (
     <motion.section
@@ -412,7 +470,7 @@ function PersonScreen({ person, index, next }) {
         onReady={() => setHeaderReady(true)}
       />
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {headerReady && (
           <motion.div
             className={'mediaArea' + (person.kind === 'text' ? ' textMedia' : '')}
@@ -425,23 +483,21 @@ function PersonScreen({ person, index, next }) {
                 <p>{person.text}</p>
               </article>
             ) : (
-              <PendingMedia person={person} />
+              <VideoMedia
+                person={person}
+                onDone={() => setMediaDone(true)}
+              />
             )}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {headerReady && (
-        <motion.div
-          className="personButton"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.28 }}
-        >
-          <Button onClick={next}>
-            {index === people.length - 1 ? 'continuar' : 'próximo'}
-          </Button>
-        </motion.div>
+      {headerReady && mediaDone && (
+        <CompletionBlock
+          message={person.finalMessage}
+          onNext={next}
+          buttonLabel={nextLabel}
+        />
       )}
     </motion.section>
   )
@@ -517,18 +573,34 @@ function App() {
               'Quase todo mundo.'
             ]}
             button="continuar comigo"
-            onNext={() => setPhase('finale')}
+            onNext={() => setPhase('yanIntro')}
             dark
+          />
+        )}
+
+        {phase === 'yanIntro' && (
+          <CenteredTextScreen
+            key="yanIntro"
+            lines={['Agora falta eu.']}
+            button="continuar"
+            onNext={() => setPhase('yanVideo')}
+          />
+        )}
+
+        {phase === 'yanVideo' && (
+          <PersonScreen
+            key="yanVideo"
+            person={yan}
+            index={0}
+            final
+            next={() => setPhase('finale')}
           />
         )}
 
         {phase === 'finale' && (
           <CenteredTextScreen
             key="finale"
-            lines={[
-              'Agora falta eu.',
-              'Feliz aniversário, meu amor.'
-            ]}
+            lines={['Feliz aniversário, meu amor.']}
           />
         )}
       </AnimatePresence>
