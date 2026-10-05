@@ -374,3 +374,30 @@ button{
     animation-iteration-count:1!important;
   }
 }
+
+.videoMedia{
+  width:100%;
+  max-height:60dvh;
+  aspect-ratio:9/13;
+  object-fit:cover;
+  background:#171311;
+  border:0;
+}
+
+.completionBlock{
+  position:relative;
+  z-index:2;
+  width:100%;
+  padding-top:8px;
+}
+
+.finalMessage{
+  max-width:330px;
+  margin:0 auto 12px;
+  text-align:center;
+  font-family:var(--serif);
+  font-size:18px;
+  font-weight:500;
+  line-height:1.18;
+  color:var(--muted);
+}
