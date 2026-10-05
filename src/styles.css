@@ -401,3 +401,28 @@ button{
   line-height:1.18;
   color:var(--muted);
 }
+
+
+.pendingAudio{
+  width:100%;
+  min-height:150px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(43,36,32,.1);
+  background:#efe8e1;
+}
+
+.pendingAudio span{
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:.05em;
+  text-transform:lowercase;
+}
+
+.audioMedia{
+  width:100%;
+  max-width:360px;
+  display:block;
+  margin:auto;
+}
