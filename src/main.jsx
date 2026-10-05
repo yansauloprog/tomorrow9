@@ -4,14 +4,39 @@ import { AnimatePresence, motion } from 'framer-motion'
 import './styles.css'
 
 const people = [
-  { name: 'Yasmin', kind: 'pending' },
-  { name: 'Cecílya', kind: 'pending' },
-  { name: 'Beatriz', kind: 'pending' },
-  { name: 'Lucas', kind: 'pending' },
-  { name: 'Ramayana', kind: 'pending' },
-  { name: 'Marquinhos', kind: 'pending' },
+  {
+    name: 'Yasmin',
+    description: 'grande amiga e com certeza cúmplice de muitas histórias',
+    kind: 'pending'
+  },
+  {
+    name: 'Cecílya',
+    description: 'incrivelmente, a mãe dela também!',
+    kind: 'pending'
+  },
+  {
+    name: 'Beatriz',
+    description: 'sim, a mãe dela deixou ela mandar!',
+    kind: 'pending'
+  },
+  {
+    name: 'Lucas',
+    description: 'depois de muita espera, ele mandou kkkk',
+    kind: 'pending'
+  },
+  {
+    name: 'Ramayana',
+    description: 'participação mais do que obrigatória pô, mãe é mãe, né',
+    kind: 'pending'
+  },
+  {
+    name: 'Marquinhos',
+    description: 'ele também não podia ficar de fora',
+    kind: 'pending'
+  },
   {
     name: 'Tio Paniagua & Tia Fátima',
+    description: 'algumas pessoas simplesmente viram família',
     kind: 'text',
     text: 'Minha querida Thayná, nesta data, a emoção tomava conta de todos e, naquele momento, você chegava para dar alegria e emoção a todos que te esperavam.\n\nSua infância e suas peripécias ficaram gravadas em nossa mente como aquela menininha tão amável, sorridente e alegre.\n\nVocê foi crescendo, debutou, e nós sempre vibrando pela sua vitória e seu sucesso.\n\nE, contudo, o tempo está passando.\n\nO tempo não para e não espera. Siga em frente, galgue tudo que você tem em sua mente, que a família estará sempre junto de você para te ajudar.\n\nAgora, hoje, neste dia, ele é todo seu.\n\nViva na certeza da sua felicidade.\n\nVocê, nos seus dezoito anos, tem o controle de sua vida e dela você será capaz de dominar o seu sucesso.\n\nAssim como nós estamos felizes, você também está muito irradiante de felicidade.\n\nNossos parabéns! Seja feliz. Deus te abençoe sempre.\n\nFelicidades em suas 18 primaveras.'
   }
@@ -44,6 +69,7 @@ const VerticalCutReveal = forwardRef(function VerticalCutReveal(
 
   const elements = useMemo(() => {
     const words = text.split(' ')
+
     if (splitBy === 'characters') {
       return words.map((word, i) => ({
         characters: splitIntoCharacters(word),
@@ -144,26 +170,46 @@ const VerticalCutReveal = forwardRef(function VerticalCutReveal(
   )
 })
 
-function RevealText({ children, delay = 0, inverse = false, small = false }) {
+function FloralCorner({ corner = 'topLeft', inverse = false }) {
   return (
-    <VerticalCutReveal
-      splitBy="characters"
-      staggerDuration={0.025}
-      staggerFrom="first"
-      transition={{
-        type: 'spring',
-        stiffness: 200,
-        damping: 21,
-        delay
-      }}
-      className={
-        'revealText' +
-        (inverse ? ' inverse' : '') +
-        (small ? ' small' : '')
-      }
+    <motion.svg
+      className={'floralCorner ' + corner + (inverse ? ' inverse' : '')}
+      viewBox="0 0 120 120"
+      fill="none"
+      aria-hidden="true"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.55, duration: 0.7 }}
     >
-      {children}
-    </VerticalCutReveal>
+      <path d="M10 104C23 91 28 70 34 54C41 35 56 21 79 12" />
+      <path d="M33 58C20 54 13 47 9 36C20 37 30 43 36 51" />
+      <path d="M47 35C40 24 40 14 44 7C53 16 55 26 51 37" />
+      <path d="M61 24C64 13 72 7 82 6C83 16 77 24 66 28" />
+      <path d="M82 13C88 7 98 8 104 13C100 21 92 25 83 22" />
+      <path d="M77 16C74 22 75 30 81 34C88 32 92 25 91 18C87 12 81 10 77 16Z" />
+      <path d="M80 17C84 18 86 21 86 24C83 27 80 28 77 27C76 23 77 20 80 17Z" />
+      <path d="M30 66C42 65 51 70 56 80C45 83 35 78 30 66Z" />
+      <path d="M18 84C27 82 35 86 40 94C31 99 22 95 18 84Z" />
+    </motion.svg>
+  )
+}
+
+function OrnamentDivider({ inverse = false }) {
+  return (
+    <motion.div
+      className={'ornamentDivider' + (inverse ? ' inverse' : '')}
+      initial={{ opacity: 0, scaleX: 0.55 }}
+      animate={{ opacity: 1, scaleX: 1 }}
+      transition={{ duration: 0.55 }}
+      aria-hidden="true"
+    >
+      <span />
+      <svg viewBox="0 0 42 18" fill="none">
+        <path d="M1 9C9 9 10 2 17 2C22 2 23 7 21 9C19 11 17 8 19 6C22 3 27 3 30 6C33 9 35 9 41 9" />
+        <path d="M21 9C20 13 23 16 27 16" />
+      </svg>
+      <span />
+    </motion.div>
   )
 }
 
@@ -173,7 +219,7 @@ function Button({ children, onClick, inverse = false }) {
       className={'actionButton' + (inverse ? ' inverse' : '')}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.85, duration: 0.35 }}
+      transition={{ duration: 0.35 }}
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
     >
@@ -183,13 +229,72 @@ function Button({ children, onClick, inverse = false }) {
   )
 }
 
+function SequentialReveal({
+  lines,
+  inverse = false,
+  onFinished,
+  className = ''
+}) {
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  useEffect(() => {
+    setActiveIndex(0)
+  }, [lines])
+
+  const finishLine = (index) => {
+    if (index < lines.length - 1) {
+      setTimeout(() => {
+        setActiveIndex(index + 1)
+      }, 160)
+      return
+    }
+
+    if (onFinished) {
+      setTimeout(onFinished, 180)
+    }
+  }
+
+  return (
+    <div className={'sequentialReveal ' + className}>
+      {lines.map((line, index) => {
+        if (index > activeIndex) return null
+
+        return (
+          <VerticalCutReveal
+            key={line + index}
+            splitBy="characters"
+            staggerDuration={0.025}
+            staggerFrom="first"
+            transition={{
+              type: 'spring',
+              stiffness: 200,
+              damping: 21
+            }}
+            className={
+              'revealText' +
+              (inverse ? ' inverse' : '') +
+              (line.length > 46 ? ' small' : '')
+            }
+            onComplete={() => finishLine(index)}
+          >
+            {line}
+          </VerticalCutReveal>
+        )
+      })}
+    </div>
+  )
+}
+
 const introScreens = [
   {
     lines: ['Oi, amor.', 'Achou que a carta tinha acabado?'],
     button: 'continuar'
   },
   {
-    lines: ['Eu poderia continuar falando sobre você por horas.', 'Só que aparentemente eu não sou o único.'],
+    lines: [
+      'Eu poderia continuar falando sobre você por horas.',
+      'Só que aparentemente eu não sou o único.'
+    ],
     button: 'continuar'
   },
   {
@@ -199,6 +304,8 @@ const introScreens = [
 ]
 
 function CenteredTextScreen({ lines, button, onNext, dark = false }) {
+  const [finished, setFinished] = useState(false)
+
   return (
     <motion.section
       className={'centeredScreen' + (dark ? ' dark' : '')}
@@ -207,22 +314,21 @@ function CenteredTextScreen({ lines, button, onNext, dark = false }) {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.32 }}
     >
-      <div className="centeredMessage">
-        {lines.map((line, index) => (
-          <RevealText
-            key={line}
-            delay={index * 0.35}
-            inverse={dark}
-            small={line.length > 46}
-          >
-            {line}
-          </RevealText>
-        ))}
-      </div>
+      <FloralCorner corner="topLeft" inverse={dark} />
+      <FloralCorner corner="bottomRight" inverse={dark} />
 
-      {button && (
+      <SequentialReveal
+        lines={lines}
+        inverse={dark}
+        onFinished={() => setFinished(true)}
+        className="centeredMessage"
+      />
+
+      {button && finished && (
         <div className="centeredButton">
-          <Button onClick={onNext} inverse={dark}>{button}</Button>
+          <Button onClick={onNext} inverse={dark}>
+            {button}
+          </Button>
         </div>
       )}
     </motion.section>
@@ -235,14 +341,61 @@ function PendingMedia({ person }) {
       className="pendingMedia"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 0.5 }}
+      transition={{ duration: 0.45 }}
     >
       <span>mídia de {person.name}</span>
     </motion.div>
   )
 }
 
+function PersonHeader({ person, onReady }) {
+  const [nameDone, setNameDone] = useState(false)
+  const longName = person.name.length > 18
+
+  useEffect(() => {
+    if (!nameDone) return
+    const timer = setTimeout(onReady, 620)
+    return () => clearTimeout(timer)
+  }, [nameDone, onReady])
+
+  return (
+    <header className="personHeader">
+      <VerticalCutReveal
+        splitBy="characters"
+        staggerDuration={0.025}
+        staggerFrom="first"
+        transition={{
+          type: 'spring',
+          stiffness: 200,
+          damping: 21
+        }}
+        className={'personName' + (longName ? ' long' : '')}
+        onComplete={() => setNameDone(true)}
+      >
+        {person.name}
+      </VerticalCutReveal>
+
+      {nameDone && (
+        <>
+          <motion.p
+            className="personDescription"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.38 }}
+          >
+            {person.description}
+          </motion.p>
+
+          <OrnamentDivider />
+        </>
+      )}
+    </header>
+  )
+}
+
 function PersonScreen({ person, index, next }) {
+  const [headerReady, setHeaderReady] = useState(false)
+
   return (
     <motion.section
       className="personScreen"
@@ -251,30 +404,45 @@ function PersonScreen({ person, index, next }) {
       exit={{ opacity: 0, x: -10 }}
       transition={{ duration: 0.32 }}
     >
-      <header className="personHeader">
-        <RevealText small>{person.name}</RevealText>
-      </header>
+      <FloralCorner corner={index % 2 === 0 ? 'topRight' : 'topLeft'} />
+      <FloralCorner corner={index % 2 === 0 ? 'bottomLeft' : 'bottomRight'} />
 
-      <div className={'mediaArea' + (person.kind === 'text' ? ' textMedia' : '')}>
-        {person.kind === 'text' ? (
-          <motion.article
-            className="textMessage"
-            initial={{ opacity: 0, y: 10 }}
+      <PersonHeader
+        person={person}
+        onReady={() => setHeaderReady(true)}
+      />
+
+      <AnimatePresence>
+        {headerReady && (
+          <motion.div
+            className={'mediaArea' + (person.kind === 'text' ? ' textMedia' : '')}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45 }}
+            transition={{ duration: 0.45 }}
           >
-            <p>{person.text}</p>
-          </motion.article>
-        ) : (
-          <PendingMedia person={person} />
+            {person.kind === 'text' ? (
+              <article className="textMessage">
+                <p>{person.text}</p>
+              </article>
+            ) : (
+              <PendingMedia person={person} />
+            )}
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
-      <div className="personButton">
-        <Button onClick={next}>
-          {index === people.length - 1 ? 'continuar' : 'próximo'}
-        </Button>
-      </div>
+      {headerReady && (
+        <motion.div
+          className="personButton"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.28 }}
+        >
+          <Button onClick={next}>
+            {index === people.length - 1 ? 'continuar' : 'próximo'}
+          </Button>
+        </motion.div>
+      )}
     </motion.section>
   )
 }
@@ -342,7 +510,12 @@ function App() {
         {phase === 'ending' && (
           <CenteredTextScreen
             key="ending"
-            lines={['Pronto.', 'Todo mundo já falou.', '...quer dizer.', 'Quase todo mundo.']}
+            lines={[
+              'Pronto.',
+              'Todo mundo já falou.',
+              '...quer dizer.',
+              'Quase todo mundo.'
+            ]}
             button="continuar comigo"
             onNext={() => setPhase('finale')}
             dark
@@ -352,7 +525,10 @@ function App() {
         {phase === 'finale' && (
           <CenteredTextScreen
             key="finale"
-            lines={['Agora falta eu.', 'Feliz aniversário, meu amor.']}
+            lines={[
+              'Agora falta eu.',
+              'Feliz aniversário, meu amor.'
+            ]}
           />
         )}
       </AnimatePresence>
