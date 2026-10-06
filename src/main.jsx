@@ -341,9 +341,8 @@ const introScreens = [
   {
     lines: [
       'Oii, amor da minha vida!!!',
-      'Achou que tinha acabado na carta?',
       {
-        text: 'Não é só você que sabe fazer essas coisas?',
+        text: 'Achou que tinha acabado na carta?',
         emojiSrc: '/media/intro-emoji.png'
       }
     ],
@@ -511,13 +510,20 @@ function PersonHeader({ person, settled, detailsVisible, onNameComplete, dimmed 
 
   return (
     <motion.header
-      layout
       className={
         'personHeader' +
         (settled ? ' settled' : ' intro') +
         (dimmed ? ' dimmed' : '')
       }
-      transition={{ layout: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }}
+      initial={false}
+      animate={{
+        top: settled ? 'var(--person-header-top)' : '50%',
+        y: settled ? '0%' : '-50%'
+      }}
+      transition={{
+        duration: 0.9,
+        ease: [0.16, 1, 0.3, 1]
+      }}
     >
       <VerticalCutReveal
         splitBy="characters"
@@ -552,19 +558,6 @@ function PersonHeader({ person, settled, detailsVisible, onNameComplete, dimmed 
   )
 }
 
-function ProgressIndicator({ index }) {
-  return (
-    <motion.div
-      className="progressIndicator"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.35 }}
-      aria-label={'Mensagem ' + (index + 1) + ' de ' + people.length}
-    >
-      {String(index + 1).padStart(2, '0')} / {String(people.length).padStart(2, '0')}
-    </motion.div>
-  )
-}
 
 function PersonScreen({ person, index = 0, next, onBack }) {
   const [nameDone, setNameDone] = useState(false)
@@ -634,7 +627,6 @@ function PersonScreen({ person, index = 0, next, onBack }) {
           <button className="backButton" onClick={onBack} aria-label="Voltar">
             ←
           </button>
-          <ProgressIndicator index={index} />
         </>
       )}
 
