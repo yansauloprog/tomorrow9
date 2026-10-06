@@ -14,14 +14,18 @@
 
 html,body,#root{
   margin:0;
+  width:100%;
   min-height:100%;
-  background:#11100f;
+  background:var(--paper);
 }
 
 html{color-scheme:light}
 
 body{
   min-width:320px;
+  width:100%;
+  min-height:100dvh;
+  overflow-x:hidden;
   font-family:var(--sans);
   color:var(--ink);
   -webkit-font-smoothing:antialiased;
@@ -45,9 +49,9 @@ audio:focus-visible{
 .app{
   position:relative;
   width:100%;
-  max-width:430px;
+  max-width:none;
   min-height:100dvh;
-  margin:0 auto;
+  margin:0;
   overflow:hidden;
   background:var(--paper);
 }
@@ -696,16 +700,26 @@ audio:focus-visible{
 
 /* Desktop shell */
 
-@media(min-width:431px){
-  body{background:#0d0c0b}
-  .app{box-shadow:0 0 80px rgba(0,0,0,.34)}
+@media(min-width:768px){
+  body{
+    background:#0d0c0b;
+  }
+
+  .app{
+    width:min(100%,480px);
+    max-width:480px;
+    margin:0 auto;
+    box-shadow:0 0 80px rgba(0,0,0,.34);
+  }
 }
 
 /* Landscape safety */
 
 @media (orientation:landscape) and (max-height:600px){
   .app{
-    max-width:100%;
+    width:100%;
+    max-width:none;
+    margin:0;
   }
 
   .centeredScreen,
@@ -786,5 +800,49 @@ audio:focus-visible{
     transition-duration:.01ms!important;
     animation-duration:.01ms!important;
     animation-iteration-count:1!important;
+  }
+}
+
+
+/* Edge-to-edge mobile layout, including Dynamic Island / safe areas */
+@supports (padding: max(0px)){
+  .centeredScreen,
+  .personScreen,
+  .yanVideoScreen,
+  .finaleScreen{
+    padding-left:max(18px,env(safe-area-inset-left));
+    padding-right:max(18px,env(safe-area-inset-right));
+  }
+
+  .centeredButton,
+  .finaleFooter{
+    left:max(22px,env(safe-area-inset-left));
+    right:max(22px,env(safe-area-inset-right));
+  }
+}
+
+/* Extra breathing room on larger phones without creating side gutters */
+@media (min-width:420px) and (max-width:767px){
+  .centeredScreen,
+  .finaleScreen{
+    padding-left:26px;
+    padding-right:26px;
+  }
+
+  .personScreen{
+    padding-left:22px;
+    padding-right:22px;
+  }
+
+  .sequentialReveal{
+    max-width:390px;
+  }
+
+  .personDescription{
+    max-width:350px;
+  }
+
+  .audioMedia{
+    max-width:400px;
   }
 }
