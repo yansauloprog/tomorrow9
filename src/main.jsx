@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react'
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import './styles.css'
@@ -261,17 +261,27 @@ function SequentialReveal({
 }) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [completedLines, setCompletedLines] = useState({})
+  const completedRef = useRef(new Set())
   const sequenceKey = JSON.stringify(lines)
+  const revealTransition = useMemo(() => ({
+    type: 'spring',
+    stiffness: 200,
+    damping: 21
+  }), [])
 
   useEffect(() => {
     setActiveIndex(0)
     setCompletedLines({})
+    completedRef.current = new Set()
   }, [sequenceKey])
 
   const normalizedLine = (line) =>
     typeof line === 'string' ? { text: line } : line
 
   const finishLine = (index) => {
+    if (completedRef.current.has(index)) return
+    completedRef.current.add(index)
+
     const item = normalizedLine(lines[index])
     setCompletedLines((current) => ({ ...current, [index]: true }))
     onLineComplete?.(index)
@@ -299,34 +309,35 @@ function SequentialReveal({
             className={'revealLine' + (item.emojiSrc ? ' withEmoji' : '')}
             key={item.text + index}
           >
+            {item.emojiSrc && <span className="emojiSpacer" aria-hidden="true" />}
+
             <VerticalCutReveal
               splitBy="characters"
               staggerDuration={0.025}
               staggerFrom="first"
-              transition={{
-                type: 'spring',
-                stiffness: 200,
-                damping: 21
-              }}
+              transition={revealTransition}
               className={
                 'revealText' +
                 (inverse ? ' inverse' : '') +
-                (item.text.length > 46 ? ' small' : '') +
-                (item.emojiSrc ? ' hasEmoji' : '')
+                (item.text.length > 46 ? ' small' : '')
               }
               onComplete={() => finishLine(index)}
             >
               {item.text}
             </VerticalCutReveal>
 
-            {item.emojiSrc && completedLines[index] && (
+            {item.emojiSrc && (
               <motion.img
                 className="inlineEmoji"
                 src={item.emojiSrc}
                 alt=""
                 aria-hidden="true"
-                initial={{ opacity: 0, scale: 0.65, rotate: -7 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                initial={false}
+                animate={{
+                  opacity: completedLines[index] ? 1 : 0,
+                  scale: completedLines[index] ? 1 : 0.65,
+                  rotate: completedLines[index] ? 0 : -7
+                }}
                 transition={{ type: 'spring', stiffness: 260, damping: 18 }}
               />
             )}
