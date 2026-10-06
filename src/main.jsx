@@ -364,7 +364,10 @@ const introScreens = [
     button: 'continuar'
   },
   {
-    lines: ['Então eu convoquei reforços.'],
+    lines: [
+      'Só que se eu fosse falar sozinho sobre o quanto você é importante pra gente, isso aqui ia demorar bastante…',
+      'Então eu convoquei reforços.'
+    ],
     button: 'quero ver'
   }
 ]
