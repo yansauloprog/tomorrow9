@@ -37,14 +37,6 @@ const people = [
     mood: 'mossoro'
   },
   {
-    name: 'Lucas',
-    description: 'Por ele você não esperava, né?',
-    kind: 'audio',
-    src: '',
-    finalMessage: '',
-    mood: 'surprise'
-  },
-  {
     name: 'Ramayana',
     description: 'participação mais que obrigatória',
     kind: 'video',
@@ -70,7 +62,7 @@ const people = [
   }
 ]
 
-const YAN_VIDEO_SRC = ''
+const YAN_VIDEO_SRC = '/media/yan.mp4'
 
 const VerticalCutReveal = forwardRef(function VerticalCutReveal(
   {
@@ -835,7 +827,7 @@ function App() {
     } else if (phase === 'people') {
       startIndex = personIndex + 1
     } else if (phase === 'family') {
-      startIndex = 5
+      startIndex = 4
     }
 
     if (startIndex < 0) return
@@ -854,6 +846,20 @@ function App() {
     }
   }, [phase, introIndex, personIndex])
 
+  useEffect(() => {
+    if (!YAN_VIDEO_SRC || !['ending', 'yanIntro'].includes(phase)) return
+
+    const yanPreload = document.createElement('video')
+    yanPreload.preload = 'metadata'
+    yanPreload.src = YAN_VIDEO_SRC
+    yanPreload.load()
+
+    return () => {
+      yanPreload.removeAttribute('src')
+      yanPreload.load()
+    }
+  }, [phase])
+
   const nextIntro = () => {
     if (introIndex < introScreens.length - 1) {
       setIntroIndex((current) => current + 1)
@@ -864,8 +870,8 @@ function App() {
   }
 
   const nextPerson = () => {
-    if (personIndex === 4) {
-      setPersonIndex(5)
+    if (personIndex === 3) {
+      setPersonIndex(4)
       setPhase('family')
       return
     }
@@ -885,8 +891,8 @@ function App() {
       return
     }
 
-    if (personIndex === 5) {
-      setPersonIndex(4)
+    if (personIndex === 4) {
+      setPersonIndex(3)
       setPhase('people')
       return
     }
