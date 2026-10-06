@@ -14,7 +14,7 @@ const people = [
   {
     name: 'Cecílya',
     description: 'sim, por incrível que pareça, ela veio também!',
-    kind: 'audio',
+    kind: 'video',
     src: '',
     finalMessage: ''
   },
