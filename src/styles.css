@@ -825,13 +825,13 @@ audio:focus-visible{
 @media (min-width:420px) and (max-width:767px){
   .centeredScreen,
   .finaleScreen{
-    padding-left:26px;
-    padding-right:26px;
+    padding-left:max(26px,env(safe-area-inset-left));
+    padding-right:max(26px,env(safe-area-inset-right));
   }
 
   .personScreen{
-    padding-left:22px;
-    padding-right:22px;
+    padding-left:max(22px,env(safe-area-inset-left));
+    padding-right:max(22px,env(safe-area-inset-right));
   }
 
   .sequentialReveal{
