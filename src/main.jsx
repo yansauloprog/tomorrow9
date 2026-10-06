@@ -13,58 +13,58 @@ const people = [
   },
   {
     name: 'Cecílya',
-    description: 'incrivelmente, a mãe dela também!',
+    description: 'sim, por incrível que pareça, ela veio também!',
     kind: 'audio',
     src: '',
-    finalMessage: 'sim, por incrível que pareça, ela veio também.'
+    finalMessage: ''
   },
   {
     name: 'Beatriz',
     description: 'sim, a mãe dela deixou ela mandar!',
     kind: 'text',
     text: 'Você é linda por fora, mas é por dentro que você brilha de verdade.\nTem uma luz que vibra e uma risada que faz parte do seu jeitinho que salva qualquer um.\nEu tenho tanto orgulho de conhecer a mulher que você é.\nMas hoje eu quero mostrar que vc é especial como pessoa, e amiga verdadeira.\nCom uma amizade de verdade não é só foto bonita.\nÉ ter com quem contar, e fazer presente. Mesmo não sendo sempre 100% por que nada e perfeito, porém amar, cuida,respeitar e fundamental \nA gente já brigou por besteira, já chorou junto, já riu até doer a barriga.\nVocê me conhece sem filtro nenhum e continua aqui,como eu também estou quando precisar.\nVocê é a amiga que fica. Que escuta, que puxa a orelha e que vibra por mim.\n18 anos é só o começo da uma fase nova.\nQue vai mudar muita coisa, mas eu quero estar e fazer parte nesses novos ciclos.\nFeliz vida,você merece o mundo. Eu amo você!🤍',
-    finalMessage: 'Nem eu acreditei que a mãe dela deixou KKKKKKKKKK'
+    finalMessage: ''
   },
   {
     name: 'Malu',
-    description: 'nem deu 2 anos direito e já virou uma das mais próximas',
+    description: 'mensagem quentinha diretamente de Mossoró',
     kind: 'audio',
     src: '',
-    finalMessage: 'nem dois anos direito e já parece amizade de uma vida inteira.'
+    finalMessage: ''
   },
   {
     name: 'Lucas',
-    description: 'depois de muita espera, ele mandou kkkk',
+    description: 'Por ele você não esperava, né?',
     kind: 'audio',
     src: '',
-    finalMessage: 'por ele você não esperava, né?'
+    finalMessage: ''
   },
   {
     name: 'Ramayana',
-    description: 'participação mais do que obrigatória pô, mãe é mãe, né',
+    description: 'participação mais que obrigatória',
     kind: 'video',
     src: '',
-    finalMessage: 'essa aqui não tinha como ser só mais um recado. é mãe.'
+    finalMessage: ''
   },
   {
     name: 'Marquinhos',
-    description: 'ele também não podia ficar de fora',
+    description: 'E claro que o pai também tinha coisa pra dizer.',
     kind: 'audio',
     src: '',
-    finalMessage: 'e claro que o pai também tinha coisa pra dizer.'
+    finalMessage: ''
   },
   {
     name: 'Tio Paniagua & Tia Fátima',
     description: 'algumas pessoas simplesmente viram família',
     kind: 'text',
     text: 'Minha querida Thayná, nesta data, a emoção tomava conta de todos e, naquele momento, você chegava para dar alegria e emoção a todos que te esperavam.\n\nSua infância e suas peripécias ficaram gravadas em nossa mente como aquela menininha tão amável, sorridente e alegre.\n\nVocê foi crescendo, debutou, e nós sempre vibrando pela sua vitória e seu sucesso.\n\nE, contudo, o tempo está passando.\n\nO tempo não para e não espera. Siga em frente, galgue tudo que você tem em sua mente, que a família estará sempre junto de você para te ajudar.\n\nAgora, hoje, neste dia, ele é todo seu.\n\nViva na certeza da sua felicidade.\n\nVocê, nos seus dezoito anos, tem o controle de sua vida e dela você será capaz de dominar o seu sucesso.\n\nAssim como nós estamos felizes, você também está muito irradiante de felicidade.\n\nNossos parabéns! Seja feliz. Deus te abençoe sempre.\n\nFelicidades em suas 18 primaveras.',
-    finalMessage: 'esse aqui veio de quem não precisou de sobrenome pra virar família.'
+    finalMessage: ''
   }
 ]
 
 const yan = {
   name: 'Yan',
-  description: 'agora sim, faltava eu.',
+  description: 'Agora sim, faltava eu.',
   kind: 'video',
   src: '',
   finalMessage: ''
@@ -264,10 +264,11 @@ function SequentialReveal({
   className = ''
 }) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const sequenceKey = lines.join('\u0001')
 
   useEffect(() => {
     setActiveIndex(0)
-  }, [lines])
+  }, [sequenceKey])
 
   const finishLine = (index) => {
     if (index < lines.length - 1) {
@@ -625,7 +626,7 @@ function App() {
         {phase === 'yanIntro' && (
           <CenteredTextScreen
             key="yanIntro"
-            lines={['Agora falta eu.']}
+            lines={['Agora sim, faltava eu.']}
             button="continuar"
             onNext={() => setPhase('yanVideo')}
           />
@@ -644,7 +645,11 @@ function App() {
         {phase === 'finale' && (
           <CenteredTextScreen
             key="finale"
-            lines={['Feliz aniversário, meu amor.']}
+            lines={[
+              'Feliz aniversário, meu amor.',
+              'Sempre farei de tudo que for possível para seu aniversário nunca ser "só mais um dia".',
+              'Eu te amo mais que tudo, aproveite sua semana, minha gata!'
+            ]}
           />
         )}
       </AnimatePresence>
