@@ -32,7 +32,7 @@ const people = [
     name: 'Malu',
     description: 'mensagem quentinha diretamente de Mossoró',
     kind: 'audio',
-    src: '/media/malu.m4a',
+    src: 'https://zb4kskwhym25wiqp.public.blob.vercel-storage.com/birthday/malu.m4a',
     finalMessage: '',
     mood: 'mossoro'
   },
@@ -48,7 +48,7 @@ const people = [
     name: 'Marquinhos',
     description: 'E claro que o pai também tinha coisa pra dizer.',
     kind: 'audio',
-    src: '/media/marquinhos.m4a',
+    src: 'https://zb4kskwhym25wiqp.public.blob.vercel-storage.com/birthday/marquinhos.m4a',
     finalMessage: '',
     mood: 'family'
   },
