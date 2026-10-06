@@ -104,10 +104,21 @@ audio:focus-visible{
   display:flex;
   align-items:flex-end;
   justify-content:center;
+  text-align:center;
 }
 
 .revealLine.withEmoji{
-  gap:7px;
+  display:grid;
+  grid-template-columns:36px minmax(0,1fr) 36px;
+  align-items:end;
+  column-gap:0;
+}
+
+.emojiSpacer{
+  width:29px;
+  height:29px;
+  justify-self:center;
+  visibility:hidden;
 }
 
 .centeredButton{
@@ -143,6 +154,7 @@ audio:focus-visible{
 
 .revealText{
   width:100%;
+  margin-inline:auto;
   justify-content:center;
   text-align:center;
   font-family:var(--serif);
@@ -162,18 +174,13 @@ audio:focus-visible{
   color:#f8f2ec;
 }
 
-.revealText.hasEmoji{
-  width:auto;
-  max-width:calc(100% - 37px);
-}
-
 .inlineEmoji{
   width:29px;
   height:29px;
-  flex:0 0 29px;
   object-fit:cover;
   border-radius:7px;
   margin-bottom:2px;
+  justify-self:center;
 }
 
 .srOnly{
@@ -834,4 +841,14 @@ audio:focus-visible{
   .audioMedia{
     max-width:400px;
   }
+}
+
+
+.sequentialReveal > .revealLine{
+  flex:0 0 auto;
+  margin-inline:auto;
+}
+
+.sequentialReveal > .revealLine .cutReveal{
+  margin-inline:auto;
 }
