@@ -8,14 +8,14 @@ const people = [
     name: 'Yasmin',
     description: 'grande amiga e com certeza cúmplice de muitas histórias',
     kind: 'video',
-    src: '',
+    src: 'https://temporary-nimble-tempest-7y7tdcj.vercel.app/media/yasmin.mp4',
     finalMessage: 'se existe alguma história sua que eu ainda não sei, é bem capaz dela saber.'
   },
   {
     name: 'Cecílya',
     description: 'sim, por incrível que pareça, ela veio também!',
     kind: 'video',
-    src: '',
+    src: 'https://temporary-nimble-tempest-7y7tdcj.vercel.app/media/cecilya.mp4',
     finalMessage: ''
   },
   {
@@ -43,7 +43,7 @@ const people = [
     name: 'Ramayana',
     description: 'participação mais que obrigatória',
     kind: 'video',
-    src: '',
+    src: 'https://temporary-nimble-tempest-7y7tdcj.vercel.app/media/ramayana.mp4',
     finalMessage: ''
   },
   {
