@@ -689,20 +689,16 @@ function PersonScreen({ person, index = 0, next, onBack }) {
 }
 
 function YanVideoScreen({ onDone }) {
-  const [placeholderReady, setPlaceholderReady] = useState(false)
   const [ended, setEnded] = useState(false)
-
-  useEffect(() => {
-    if (YAN_VIDEO_SRC) return
-    const timer = setTimeout(() => setPlaceholderReady(true), 700)
-    return () => clearTimeout(timer)
-  }, [])
+  const [videoError, setVideoError] = useState(false)
 
   useEffect(() => {
     if (!ended) return
     const timer = setTimeout(onDone, 950)
     return () => clearTimeout(timer)
   }, [ended, onDone])
+
+  const hasVideo = Boolean(YAN_VIDEO_SRC) && !videoError
 
   return (
     <motion.section
@@ -712,7 +708,7 @@ function YanVideoScreen({ onDone }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.65 }}
     >
-      {YAN_VIDEO_SRC ? (
+      {hasVideo ? (
         <motion.video
           className="yanVideo"
           src={YAN_VIDEO_SRC}
@@ -723,18 +719,17 @@ function YanVideoScreen({ onDone }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.25, duration: 0.6 }}
           onEnded={() => setEnded(true)}
+          onError={() => setVideoError(true)}
         />
       ) : (
         <motion.div
           className="yanPlaceholder"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.35, duration: 0.5 }}
+          transition={{ delay: 0.25, duration: 0.5 }}
         >
-          <span>seu vídeo entra aqui</span>
-          {placeholderReady && (
-            <Button inverse onClick={onDone}>continuar</Button>
-          )}
+          <span>vídeo do Yan</span>
+          <Button inverse onClick={onDone}>continuar</Button>
         </motion.div>
       )}
     </motion.section>
