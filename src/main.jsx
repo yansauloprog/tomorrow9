@@ -352,10 +352,7 @@ const introScreens = [
   {
     lines: [
       'Oii, amor da minha vida!!!',
-      {
-        text: 'Achou que tinha acabado na carta?',
-        emojiSrc: '/media/intro-emoji.png'
-      }
+      'Achou que tinha acabado na carta?'
     ],
     button: 'continuar'
   },
@@ -385,9 +382,16 @@ function CenteredTextScreen({
   dark = false,
   flowers = true,
   hapticLine = -1,
-  className = ''
+  className = '',
+  autoAdvanceDelay = null
 }) {
   const [finished, setFinished] = useState(false)
+
+  useEffect(() => {
+    if (!finished || autoAdvanceDelay == null || !onNext) return
+    const timer = setTimeout(onNext, autoAdvanceDelay)
+    return () => clearTimeout(timer)
+  }, [finished, autoAdvanceDelay, onNext])
 
   return (
     <motion.section
@@ -813,11 +817,6 @@ function App() {
   }, [phase, introIndex, personIndex])
 
   useEffect(() => {
-    const img = new Image()
-    img.src = '/media/intro-emoji.png'
-  }, [])
-
-  useEffect(() => {
     let startIndex = -1
 
     if (phase === 'intro' && introIndex === introScreens.length - 1) {
@@ -973,15 +972,12 @@ function App() {
         {phase === 'yanAfter' && (
           <CenteredTextScreen
             key="yanAfter"
-            lines={[
-              { text: 'eu te amo.', pauseAfter: 520 },
-              'feliz 18, minha adultinha.'
-            ]}
-            button="continuar"
+            lines={['eu te amo, minha adultinha']}
             onNext={() => setPhase('finale')}
             dark
             flowers={false}
             className="yanAfterScreen"
+            autoAdvanceDelay={1050}
           />
         )}
 
